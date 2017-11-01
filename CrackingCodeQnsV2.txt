@@ -313,3 +313,73 @@ Q11) Find the majority element in a array.
 
         return maj;
     }
+//**********************************************************************************//
+10/31/17
+Q12) Merge sort
+    void mergeSort(int ary[], int low, int high){
+        if(low<high){
+            int mid = (low+high)/2;
+            mergeSort(ary,low,mid);
+            mergeSort(ary,mid+1,high);
+            merge(ary, low, mid, high);
+        }
+    }
+
+    void merge(int []ary, int low, int mid, int high){
+        int i=low, j=mid+1,k=low;
+        int temp[] = new int[high+1];
+
+        for(int idx=low; idx<=high; idx++){
+            temp[idx] = ary[idx];
+        }
+        while(i<=mid && j<=high){
+            if(temp[i]<=temp[j]){
+                ary[k++] = temp[i++];
+            } else {
+                ary[k++] = temp[j++];
+            }
+        }
+        while(i<=mid){
+            ary[k++] = temp[i++];
+        }
+    }
+
+//**********************************************************************************//
+10/31/17
+Q13) Letter Combinations of a Phone Number
+  given "23", will print ["ad", "ae", "af", "bd", "be", "bf", "cd", "ce", "cf"]
+
+    public List<String> letterCombinations(String digits) {
+        //store the key combinations in a map
+        HashMap<String,String> map = new HashMap<>();
+        map.put("1","");
+        map.put("2","abc");
+        map.put("3","def");map.put("4","ghi");map.put("5","jkl");map.put("6","mno");
+        map.put("7","pqrs");map.put("8","tuv");map.put("9","wxyz");map.put("0","");
+
+        //for storing the strings..
+        List<String> list = new ArrayList<String>();
+        if(digits==null||digits.isEmpty())
+            return list;
+
+        printRecursive(digits, 0, map,"",list);
+        return list;
+    }
+
+    //recursive program that appends all possible combinations of a key, calls the function
+    //recursively.  eg "23" -> "a_","b_","c_" in first loop, "ad","ae","af"...etc
+    public void printRecursive(String digits, int index, HashMap<String,String> map,
+                               String comb, List<String> list){
+        //base case..
+        if(index == digits.length()){
+            list.add(comb);
+            return;
+        }
+        String chars = map.get(String.valueOf(digits.charAt(index)));
+        if(chars.length()==0) //check for 0 and 1..
+            return;
+        //else append and recursively call..abc
+        for(int i=0; i<chars.length();i++){
+            printRecursive(digits, index+1,map, comb+chars.charAt(i),list);
+        }
+    }
