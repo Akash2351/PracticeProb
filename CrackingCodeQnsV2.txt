@@ -82,7 +82,7 @@ Output:
     List<Integer> list = new ArrayList<>();
         if(nums == null || nums.length == 1)
             return list;
-
+        //nums[nums[i] -1] = -nums[nums[i]];
         // the nos in the given array range from 1 to n...so indices are -l less...0 to n-1
         // for every no found, mark it negative in the same array for indices...
         for(int i=0; i< nums.length; i++){
@@ -176,6 +176,8 @@ Q6) Find the longest palindromic substring in the given string...
             left--;
             right++;
         }
+        //range of current palindrome = left+1, right-1..
+        //diff = (right -1) - left
         if(curMax < right-left-1){
             low = left+1;
             curMax = right-left-1;
@@ -417,4 +419,96 @@ Q14) Combination sum
                     curList.remove(curList.size()-1);
             }
         }
+    }
+
+//**********************************************************************************//
+11/3/17
+Q15) Permutations (Given a collection of distinct numbers, return all possible permutations)
+
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        if (nums == null)
+            return list;
+        else if (nums.length == 1) {
+            list.add(Arrays.asList(nums[0]));
+            return list;
+        }
+
+        getPermutations(nums, nums.length, new ArrayList<Integer>(), list);
+        return list;
+    }
+
+    void getPermutations(int[] nums, int curLen, List<Integer> cur, List<List<Integer>> list) {
+        if (curLen == 0) {
+            list.add(new ArrayList(cur));
+        } else if (curLen > 0) {
+            for (int num : nums) {
+                if (!cur.contains(num)) {
+                    cur.add(num);
+                    getPermutations(nums, curLen - 1, cur, list);
+                    cur.remove(cur.size() - 1);
+                }
+            }
+        }
+    }
+
+//**********************************************************************************//
+11/3/17
+Q16) You are given an n x n 2D matrix representing an image.
+     Rotate the image by 90 degrees (clockwise).
+
+    /*The idea was firstly transpose the matrix and then flip it symmetrically. For instance,
+        1  2  3
+        4  5  6
+        7  8  9
+    after transpose, it will be swap(matrix[i][j], matrix[j][i])
+        1  4  7
+        2  5  8
+        3  6  9
+    Then flip the matrix horizontally. (swap(matrix[i][j], matrix[i][matrix.length-1-j])
+        7  4  1
+        8  5  2
+        9  6  3*/
+
+    public void rotate(int[][] matrix) {
+        int len = matrix.length;
+        // first transpose the matrix...
+        for(int i=0; i<len;i++){
+            for(int j=i; j<len;j++){   //note j starts from i..not 0..
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = temp;
+            }
+        }
+        //flip the elements in same row...around its centre...Reverse.
+        for(int i=0; i<len;i++){
+            for(int j=0; j<len/2;j++){   // j until len/2...like reverse
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[i][len-1-j];
+                matrix[i][len-1-j] = temp;
+            }
+        }
+    }
+
+//**********************************************************************************//
+11/3/17
+Q17) Hamming distance: The Hamming distance between two integers is the number
+        of positions at which the corresponding bits are different.
+        Input: x = 1, y = 4
+        Output: 2
+        Explanation:
+        1   (0 0 0 1)
+        4   (0 1 0 0)
+               ↑   ↑
+
+    public static int hammingDistance(int x, int y) {
+        //xor to get the no formed with different bits.
+        int xor = x ^ y, count = 0;
+        // 1 ^ 4 => 5..find the no of ones in 5...
+        while(xor!=0){
+            if((xor & 1) == 1)
+                count++;
+            xor = xor >> 1;
+        }
+        return count;
     }
