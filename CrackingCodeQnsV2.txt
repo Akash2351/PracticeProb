@@ -512,3 +512,126 @@ Q17) Hamming distance: The Hamming distance between two integers is the number
         }
         return count;
     }
+
+//**********************************************************************************//
+11/7/17
+Q18) sort a linked list in o(nlogn) with constant space
+
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+
+        //split the list in 2 halves...fast moves twice the speed.
+        ListNode slow = head, fast = head, prev = null;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        // break first list at prev..second list starts from slow.
+        prev.next = null;
+
+        //sort the lists recursively
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(slow);
+
+        return merge(l1, l2);
+    }
+
+    ListNode merge(ListNode l1, ListNode l2) {
+        ListNode head = new ListNode(0), p = head;
+        while (l1 != null && l2 != null) {
+            if (l1.val <= l2.val) {
+                p.next = l1;
+                l1 = l1.next;
+            } else {
+                p.next = l2;
+                l2 = l2.next;
+            }
+            p = p.next;
+        }
+
+        if (l1 == null)
+            p.next = l2;
+        if (l2 == null)
+            p.next = l1;
+
+        return head.next;
+    }
+
+//**********************************************************************************//
+11/7/17
+Q19) Given a string, your task is to count how many palindromic substrings in this string.
+Input: "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+
+    //same like print all palindromic substring...
+    //expand around its centre....
+    public int countSubstrings(String s) {
+        if(s==null)
+            return 0;
+        if(s.length() ==1)
+            return 1;
+
+        int count = 0;
+        for(int i=0;i<s.length();i++){
+            count += extendPalindrome(s,i,i);
+            count += extendPalindrome(s,i,i+1);
+        }
+        return count;
+    }
+
+    int extendPalindrome(String s, int left, int right){
+        int len = s.length(),count=0;
+        while(left>=0 && right<len && s.charAt(left) == s.charAt(right)){
+            left--;
+            right++;
+            count++;
+        }
+        return count;
+    }
+
+//**********************************************************************************//
+11/7/17
+Q20) You are given a binary tree in which each node contains an integer value.
+     Find the number of paths that sum to a given value.
+eg) root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2   11
+ / \   \
+3  -2   1
+
+Return 3. The paths that sum to 8 are:
+1.  5 -> 3
+2.  5 -> 2 -> 1
+3. -3 -> 11
+
+    public int pathSum(TreeNode root, int sum) {
+        if (root == null)
+            return 0;
+
+        //call recursively and find for other child nodes...
+        return findPath(root, sum) + pathSum(root.left, sum) + pathSum(root.right, sum);
+
+        //if checking from only root node, then
+        //return findPath(root, sum);
+    }
+
+    //returns the number of paths to a given sum, starting from node root...
+    int findPath(TreeNode root, int sum) {
+        if (root == null)
+            return 0;
+
+        int count = 0;
+        sum = sum - root.val;
+        if (sum == 0)
+            count++;
+        count += findPath(root.left, sum);
+        count += findPath(root.right, sum);
+
+        return count;
+    }
