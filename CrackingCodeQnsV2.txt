@@ -635,3 +635,98 @@ Return 3. The paths that sum to 8 are:
 
         return count;
     }
+
+//**********************************************************************************//
+11/8/17
+Q21) Given a non-empty array containing only positive integers, find if the array
+can be partitioned into two subsets such that the sum of elements in both subsets is equal.
+Input: [1, 5, 11, 5]
+Output: true
+Explanation: The array can be partitioned as [1, 5, 5] and [11].
+
+    public boolean canPartition(int[] nums) {
+        if(nums.length ==1)
+            return false;
+
+        int sum =0;
+        for(int num: nums)
+            sum+=num;
+
+        //if sum is not even, return false,it cannot be divided
+        if(sum%2!=0)
+            return false;
+
+        sum = sum/2;
+        boolean table[] = new boolean[sum+1];
+        Arrays.fill(table, false);
+        table[0] = true;
+
+        for(int i=0; i<nums.length; i++){
+            for(int j=sum; j>0; j--){  //same like coin change, but do from top and decrement
+                if(nums[i] <= j)
+                    table[j] = table[j] || table[j-nums[i]];
+            }
+        }
+        return table[sum];
+    }
+
+//**********************************************************************************//
+11/8/17
+Q22) Given a non-empty array of integers, return the k most frequent elements.
+     For example,    Given [1,1,1,2,2,3] and k = 2, return [1,2].
+
+    public static List<Integer> topKFrequent(int[] nums, int k) {
+
+        //get the frequency count...
+        HashMap<Integer,Integer> map = new HashMap<>();
+        for(int num: nums){
+            map.put(num, map.getOrDefault(num,0)+1);
+        }
+
+        //use a bucket, with count as index...and store the nos...
+        List[] bucket = new List[nums.length+1];
+        for(Integer no: map.keySet()){
+            Integer count = map.get(no);
+            if(bucket[count] == null)
+                bucket[count] = new ArrayList<>();
+
+            bucket[count].add(no);
+        }
+
+        //keep adding results from the max count bucket until k elements are added..
+        ArrayList<Integer> res = new ArrayList<>();
+        for(int i=nums.length; i>0 && res.size()<k; i--){
+            if(bucket[i]!=null){
+                res.addAll(bucket[i]);
+            }
+        }
+        return res;
+    }
+
+//**********************************************************************************//
+11/8/17
+Q23) Given a binary tree, you need to compute the length of the diameter of the tree.
+The diameter of a binary tree is the length of the longest path between any
+two nodes in a tree. This path may or may not pass through the root
+
+    int max = 0;
+    public int diameterOfBinaryTree(TreeNode root) {
+        getHeight(root); //returns height of tree...we dont need that.
+        return max;
+        //Note: finding left tree height + right tree height + links to parent
+        //will not always work...sometimes right/left child only may have the longest path
+    }
+
+    //calculate height of tree...meanwhile check for max height btw left and right child.
+    int getHeight(TreeNode root){
+        if(root == null)
+            return 0;
+        int left =  getHeight(root.left);
+        int right = getHeight(root.right);
+
+        //For every node, length of longest path which passes it
+        // is  MaxDepth of its left subtree + MaxDepth of its right subtree.
+        max = Math.max(max,left+right);
+
+        return 1+ Math.max(left,right);
+    }
