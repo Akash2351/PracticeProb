@@ -1,0 +1,166 @@
+
+//**********************************************************************************//
+11/14/17
+Q1) Reverse String:
+Write a function that takes a string as input and returns the string reversed.
+Example:
+Given s = "hello", return "olleh".
+
+    public String reverseString(String s) {
+        if (s == null || s.length() == 1)
+            return s;
+
+        char[] chars = s.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        int len = chars.length;
+
+        for (int i = len - 1; i >= 0; i--) {
+            sb.append(chars[i]);
+        }
+        return sb.toString();
+    }
+
+//**********************************************************************************//
+11/14/17
+Q2) Longest Common Prefix
+Write a function to find the longest common prefix string amongst an array of strings.
+
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0)
+            return "";
+        if (strs.length == 1)
+            return strs[0];
+
+        int maxlen = Integer.MAX_VALUE;
+        String min = null;
+        //find the length of shortest string..
+        // the answer cannot be longer than this.
+        for (String str : strs) {
+            if (str.length() < maxlen) {
+                maxlen = str.length();
+                min = str;
+            }
+        }
+        //for 0 to maxlen,
+        //check if char[i] is same for all strings,
+        //else stop and return till last i;
+        boolean end = false;
+        for (int i = 0; i < maxlen; i++) {
+            for (String str : strs) {
+                if (min.charAt(i) != str.charAt(i)) {
+                    end = true;
+                    break;
+                }
+            }
+            if (end) {
+                if (i == 0) return "";
+                else
+                    return min.substring(0, i);
+            }
+        }
+        return min;
+    }
+
+//**********************************************************************************//
+11/14/17
+Q3)Sum of two integers
+Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -.
+Example:
+Given a = 1 and b = 2, return 3.
+
+    public int getSum(int a, int b) {
+        if (b == 0)
+            return a;
+        if (a == 0)
+            return b;
+
+        while (b != 0) {
+            int carry = a & b;
+            a = a ^ b;
+            b = carry << 1;
+        }
+
+        return a;
+    }
+
+//**********************************************************************************//
+11/14/17
+Q4) Reverse an integer
+Input: -123  Output: -321
+Example 3: Input: 120 Output: 21
+
+    public int reverse(int x) {
+        // when reversing, it can be > int max value,
+        //if so, return 0
+
+        long rev = 0;
+        while (x != 0) {
+            rev = rev * 10 + x % 10;
+            x = x / 10;
+            //check if val > range, return 0;
+            if (rev > Integer.MAX_VALUE || rev < Integer.MIN_VALUE)
+                return 0;
+        }
+        return (int) rev;
+    }
+
+//**********************************************************************************//
+11/14/17
+Q5) Plus one
+   inp -> [1,2,4] op-> [1,2,5], ip->[19], op-> [2,0]
+
+    public int[] plusOne(int[] digits) {
+        int len = digits.length;
+        //traverse from the last digit,
+        //if not 9, add one to it and send...
+        for (int i = len - 1; i >= 0; i--) {
+            if (digits[i] != 9) {
+                digits[i] += 1;
+                return digits;
+            }
+            //last digit is 9, make 0, carry over 1.
+            // 1 is added by default, no need for carry.
+            digits[i] = 0;
+        }
+
+        //if we have come here, it means array is all 9's..
+        int[] ret = new int[len + 1];
+        ret[0] = 1;
+
+        return ret;
+    }
+
+//**********************************************************************************//
+11/14/17
+Q6) Number of 1 Bits
+
+    public int hammingWeight(int n) {
+        int count = 0;
+        while(n!=0){
+            count += (n&1);
+            // use >>> for unsigned bit shifting
+            // >> for signed bit shifting
+            n = n>>>1;
+        }
+        return count;
+    }
+
+//**********************************************************************************//
+11/14/17
+Q7) Buy Sell stocks 2
+Design an algorithm to find the maximum profit. You may complete as many transactions
+ as you like (ie, buy one and sell one share of the stock multiple times). However, you may
+  not engage in multiple transactions at the same time (ie, you must sell the stock before
+   you buy again).
+ eg: [2,1,2,0,1] -> 2
+   [1,2,4] -> 3
+
+    public int maxProfit(int[] prices) {
+        int total = 0;
+        for (int i = 0; i < prices.length - 1; i++) {
+            if (prices[i + 1] > prices[i]) total += prices[i + 1] - prices[i];
+        }
+        return total;
+    }
+
+
