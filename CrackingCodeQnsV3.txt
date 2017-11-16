@@ -232,4 +232,78 @@ Example: 19 is a happy number
         return false;
     }
 
+//**********************************************************************************//
+11/15/17
+Q9) Factorial trailers zeros
+Given an integer n, return the number of trailing zeroes in n!.
+
+    public static int trailingZeroes(int n) {
+        if(n==0)
+            return 0;
+
+        int zeros = 0;
+        //Because all trailing 0 is from factors 5 * 2.
+        //find n/5 + n/25 + n/125 ...
+        while(n>0){
+            zeros = zeros + n/5;
+            n = n/5;
+        }
+        return zeros;
+    }
+
+//**********************************************************************************//
+11/15/17
+Q10) Odd even list
+ Given a singly linked list, group all odd nodes together followed by the even nodes.
+ Please note here we are talking about the node number and not the value in the nodes.
+
+    public ListNode oddEvenList(ListNode head) {
+        if (head == null || head.next == null)
+            return head;
+        //move the odd and even pointer by jumping one node.
+        ListNode odd = head, even = head.next, evenHead = head.next;
+        //even.next will be odd...odd should not be null,
+        //coz even will be appended to odd in the end.
+        while (even != null && even.next != null) {
+            odd.next = odd.next.next;
+            even.next = even.next.next;
+            odd = odd.next;
+            even = even.next;
+        }
+        odd.next = evenHead;
+        return head;
+    }
+
+//**********************************************************************************//
+11/15/17
+Q11) Implement pow(x, n).
+Input: 2.00000, 10  => 2^10
+Output: 1024.00000
+Input: 2.10000, 3 => 2.1^3
+Output: 9.2610
+
+    //time complex: O(logn) - > coz reducing the calc
+    //by half in each call...
+    public static  double myPow(double x, int n) {
+        if(n==0)
+            return 1;
+        if(x==0)
+            return 0;
+
+        double half = myPow(x, n/2);
+        // if power is even, just multiply halves n return
+        if(n%2 ==0)
+            return half* half;
+            // if calling myPow(x, n/2)*myPow(x, n/2) ,then O(n)
+        else {
+            //odd powers..multiply halves and x..
+            if(n>0){
+                return x * half * half;
+            } else {
+                // negative pow...x^-1 => 1/x ..
+                return  (1 / x) * half * half;
+            }
+        }
+    }
+
 
