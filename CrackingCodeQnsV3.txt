@@ -306,4 +306,25 @@ Output: 9.2610
         }
     }
 
+//**********************************************************************************//
+11/23/17
+Q11) Remove Duplicates from Sorted Array
+
+    public int removeDuplicates(int[] nums) {
+        if(nums.length <=1)
+            return nums.length;
+
+        //starting from 1st index, keep adding unique
+        //numbers..return this count.
+        int i=0;
+        for(int j=1;j<nums.length;j++){
+            if(nums[i]==nums[j])continue;
+
+            //else add to next place...non repeated chars..
+            nums[++i]= nums[j];
+        }
+        //return count of unique numbers
+        return i+1;
+    }
+
 
