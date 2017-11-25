@@ -308,7 +308,7 @@ Output: 9.2610
 
 //**********************************************************************************//
 11/23/17
-Q11) Remove Duplicates from Sorted Array
+Q12) Remove Duplicates from Sorted Array
 
     public int removeDuplicates(int[] nums) {
         if(nums.length <=1)
@@ -325,6 +325,35 @@ Q11) Remove Duplicates from Sorted Array
         }
         //return count of unique numbers
         return i+1;
+    }
+
+//**********************************************************************************//
+11/24/17
+Q13) Group Anagrams
+ For example, given: ["eat", "tea", "tan", "ate", "nat", "bat"],
+ Return: [
+   ["ate", "eat","tea"],
+   ["nat","tan"],
+   ["bat"]
+ ]
+ 
+    public static List<List<String>> groupAnagrams(String[] strs) {
+
+        if(strs==null|| strs.length==0)
+            return new ArrayList<List<String>>();
+
+        //store the strings as keys...sort and store..so anagrams
+        // will be same string
+        HashMap<String, List<String>> map = new HashMap<>();
+        for(String str: strs){
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String sorted = String.valueOf(chars);
+            if(!map.containsKey(sorted))
+                map.put(sorted,new ArrayList<String>());
+            map.get(sorted).add(str);
+        }
+        return new ArrayList<List<String>>(map.values());
     }
 
 
