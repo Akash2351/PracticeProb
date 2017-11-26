@@ -58,6 +58,12 @@ public class Test {
         list.add(t3);
         Date dt;
         Collections.sort(list);
+        /*list.sort(new Comparator<TimeSeries>() {
+            @Override
+            public int compare(TimeSeries o1, TimeSeries o2) {
+                return 0;
+            }
+        });*/
         for (TimeSeries s1 : list) {
             System.out.println(s1.dt + " :" + s1.str);
         }

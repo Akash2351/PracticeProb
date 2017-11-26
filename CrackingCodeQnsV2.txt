@@ -220,7 +220,7 @@ that a + b + c = 0? Find all unique triplets in the array which gives the sum of
                 while( left<right){
                     int tempSum = nums[i] +nums[left] + nums[right];
                     if( tempSum == target){
-                        list.add(new ArrayList<>(Arrays.asList(nums[i],nums[left],nums[right])));
+                        list.add(Arrays.asList(nums[i],nums[left],nums[right]));
                         left++; right--;
                         //skip duplicate elements...
                         while(left<right && nums[left]==nums[left-1])left++;

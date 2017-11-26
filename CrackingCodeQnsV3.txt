@@ -356,4 +356,39 @@ Q13) Group Anagrams
         return new ArrayList<List<String>>(map.values());
     }
 
+//**********************************************************************************//
+11/25/17
+Q14) Pascal Triangle
+    For example, given numRows = 5,
+    Return
+    [
+         [1],
+        [1,1],
+       [1,2,1],
+      [1,3,3,1],
+     [1,4,6,4,1]
+    ]
+
+    public List<List<Integer>> generate(int numRows) {
+        List<List<Integer>> list = new ArrayList<>();
+        if (numRows < 0)
+            return list;
+
+        for (int i = 0; i < numRows; i++) {
+            ArrayList<Integer> row = new ArrayList<>();
+            // j<i+1 , same no of columns as i.. 0 to i
+            for (int j = 0; j < i+1; j++) {
+                //add 1 to the first and last column
+                if (j == 0 || j == i)
+                    row.add(1);
+                else {
+                    //get previous row values..
+                    row.add(list.get(i - 1).get(j - 1) + list.get(i - 1).get(j));
+                }
+            }
+            list.add(row);
+        }
+        return list;
+    }
+
 

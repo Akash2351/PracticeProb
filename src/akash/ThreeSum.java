@@ -28,7 +28,7 @@ public class ThreeSum {
                 while (left < right) {
                     int tempSum = nums[i] + nums[left] + nums[right];
                     if (tempSum == target) {
-                        list.add(new ArrayList<>(Arrays.asList(nums[i], nums[left], nums[right])));
+                        list.add(Arrays.asList(nums[i], nums[left], nums[right]));
                         left++;
                         right--;
                         //skip duplicate elements...
