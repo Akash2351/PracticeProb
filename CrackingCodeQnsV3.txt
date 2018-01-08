@@ -566,3 +566,138 @@ You call a pre-defined API guess(int num) which returns 3 possible results (-1, 
         }
         return n;
     }
+
+//**********************************************************************************//
+01/04/18
+Q22) Encode and decode tiny url
+
+public class EncodeDecodeTinyUrl {
+
+    HashMap<String,String> keyIndex = new HashMap<>();
+    String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyvz1234567890";
+    static final String BASEURL = "http://tinyurl.com/";
+
+    // Encodes a URL to a shortened URL.
+    public String encode(String longUrl) {
+        String key = null;
+        do {
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i<6;i++){
+                int idx = (int)Math.random() * chars.length();
+                sb.append(chars.charAt(idx));
+            }
+            key = sb.toString();
+        }while(keyIndex.containsKey(key));
+        keyIndex.put(key, longUrl);
+        return BASEURL+key;
+    }
+
+    // Decodes a shortened URL to its original URL.
+    public String decode(String shortUrl) {
+        return keyIndex.get(shortUrl.replace(BASEURL,""));
+    }
+}
+
+// Your Codec object will be instantiated and called as such:
+// Codec codec = new Codec();
+// codec.decode(codec.encode(url));
+
+//**********************************************************************************//
+01/08/18
+Q23) Merge Intervals
+
+    /*Given a collection of intervals, merge all overlapping intervals.
+    For example,
+    Given [1,3],[2,6],[8,10],[15,18],
+            return [1,6],[8,10],[15,18].*/
+
+    public List<Interval> merge(List<Interval> intervals) {
+
+        if(intervals == null || intervals.size()==1 || intervals.size()==0)
+            return intervals;
+
+        List<Interval> list = new ArrayList<>();
+
+        //The idea is to sort the intervals by their starting points. Then, we take
+        //the first interval and compare its end with the next intervals starts.
+        //As long as they overlap, we update the end to be the max end of the
+        //overlapping intervals. Once we find a non overlapping interval, we can add
+        //the previous “extended” interval and start over.
+        //Sorting takes O(n log(n)) and merging the intervals takes O(n).
+         //So, the resulting algorithm takes O(n log(n)).
+
+        intervals.sort(new Comparator<Interval>() {
+            @Override
+            public int compare(Interval o1, Interval o2) {
+                return Integer.compare(o1.start,o2.start);
+            }
+        });
+        int start =  intervals.get(0).start;
+        int end =  intervals.get(0).end;
+
+        for (Iterator<Interval> iterator = list.iterator(); iterator.hasNext(); ) {
+            Interval next =  iterator.next();
+            if(end >= next.start){
+                end = Math.max(end,next.end);
+            } else {
+                list.add(new Interval(start, end));
+                start = next.start;
+                end = next.end;
+            }
+        }
+        return list;
+    }
+
+//**********************************************************************************//
+01/08/18
+Q24) Binary Search Tree iterator
+
+    //Implement an iterator over a binary search tree (BST). Your iterator will
+    // be initialized with the root node of a BST.
+    //Calling next() will return the next smallest number in the BST.
+    //Note: next() and hasNext() should run in average O(1) time and uses
+    // O(h) memory, where h is the height of the tree.
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+        TreeNode(int x) {
+            val = x;
+        }
+    }
+
+    public class BSTIterator {
+
+        TreeNode rootNode;
+        List<Integer> list = new ArrayList<>();
+        int index = 0;
+
+        public BSTIterator(TreeNode root) {
+            rootNode = root;
+            getList(root);
+        }
+
+        // sort the node elements in ascending order using
+        //inorder sort...
+        public void getList(TreeNode node) {
+            if (node != null) {
+                getList(node.left);
+                list.add(node.val);
+                getList(node.right);
+            }
+        }
+        /**
+         * @return whether we have a next smallest number
+         */
+        public boolean hasNext() {
+            if (index >= list.size()) return false;
+            return true;
+        }
+        /**
+         * @return the next smallest number
+         */
+        public int next() {
+            return list.get(index++);
+        }
+    }
