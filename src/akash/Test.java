@@ -3,6 +3,8 @@ package akash;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.TreeSet;
 
 /**
@@ -67,9 +69,38 @@ public class Test {
             System.out.println(s1.dt + " :" + s1.str);
         }*/
 
-        int[] arr = {3, 1, 5, 4, 2};
-        System.out.println(getBloomingNo(arr, 1));
+        //int[] arr = {3, 1, 5, 4, 2};
+        // System.out.println(getBloomingNo(arr, 1));
+
+        System.out.println(numberNeeded("hello", "ell"));
     }
+
+    public static int numberNeeded(String first, String second) {
+        char[] firstc = first.replaceAll("\\s", "").toCharArray();
+        char[] secondc = second.replaceAll("\\s", "").toCharArray();
+        HashMap<Character, Integer> map = new HashMap<Character, Integer>();
+
+        for (char c : firstc) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+
+        for (char c : secondc) {
+            map.put(c, map.getOrDefault(c, 0) - 1);
+        }
+
+        int count = 0;
+        Iterator it = map.keySet().iterator();
+        while (it.hasNext()) {
+            Character c = (Character) it.next();
+            int val = map.get(c);
+            // System.out.println("key:"+c+" val:"+val);
+            if (0 != val)
+                count += Math.abs(val);
+        }
+        return count;
+
+    }
+
 
     public static int FlowerNbloom(int[] arr, int k) {
         TreeSet<Integer> ds = new TreeSet();
