@@ -1,0 +1,62 @@
+//**********************************************************************************//
+02/13/18
+Q1) Search in Rotated Sorted Array
+Suppose an array sorted in ascending order is rotated at some pivot
+unknown to you beforehand.
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+You are given a target value to search. If found in the array return its
+index, otherwise return -1.You may assume no duplicate exists in the array.
+-> Do it in O(logn) - > use binary search..
+
+    public int search(int[] nums, int target) {
+        if(nums==null || nums.length ==0)
+            return -1;
+
+        int low = 0, high = nums.length-1;
+        while(low<=high){
+            int mid = (low+high)/2;
+            if(target == nums[mid])return mid;
+
+            // the array is in proper order...sorted...check if no is in range
+            //if yes, set the lower and upper bounds...
+            if(nums[low]<=nums[mid]){  //4 5 6 7 0 1 2
+                if(target>=nums[low] && target <nums[mid])
+                    high = mid-1;
+                else
+                    low = mid+1;
+            }
+
+            if(nums[mid] <= nums[high]){  //4 5 6 0 1 2 3
+                if(target>nums[mid] && target <= nums[high])
+                    low = mid+1;
+                else
+                    high = mid-1;
+            }
+        }
+        return -1;
+    }
+
+//**********************************************************************************//
+02/13/18
+Q2) Integer to Roman
+
+    //Given an integer, convert it to a roman numeral.
+    //Input is guaranteed to be within the range from 1 to 3999.
+    public String intToRoman(int num) {
+
+        //X->10, L->50, C->100,D->500, M->1000
+
+        String[] ones = {"","I","II","III","IV","V","VI","VII","VIII","IX"};
+        String[] tens = {"","X","XX","XXX","XL","L","LX","LXX","LXXX","XC"};
+        String[] hundreds = {"","C","CC","CCC","CD","D","DC","DCC","DCCC","CM"};
+        String[] thousands = {"","M","MM","MMM"};
+
+
+        int one = num%10;
+        int ten = (num%100)/10;
+        int hundred = (num%1000)/100;
+        int thousand = num/1000;
+
+        //System.out.printf("%d %d %d %d",one,ten,hundred,thousand);
+        return thousands[thousand]+hundreds[hundred]+tens[ten]+ones[one];
+    }

@@ -9,3 +9,717 @@ Ascii range:
 A-Z : 65 to 90
 a-z : 97 to 122
 
+//**********************************************************************************//
+Java:
+//-----------//
+Any hardware or software environment in which a program runs, is known as a platform.
+ Since Java has its own runtime environment (JRE) and API, it is called platform.
+
+JVM (Java Virtual Machine) is an abstract machine. It is a specification that provides
+runtime environment in which java bytecode can be executed.
+
+JRE is an acronym for Java Runtime Environment.It is used to provide runtime environment.
+It is the implementation of JVM.
+
+int data=50;//Here data is variable
+There are three types of variables in java:
+    local variable
+    instance variable
+    static variable
+    class A{
+        int data=50;//instance variable
+        static int m=100;//static variable
+        void method(){
+            int n=90;//local variable
+        }
+    }//end of class
+
+Inheritance:
+//-----------//
+When one object acquires all the properties and behaviours of parent object i.e.
+known as inheritance. It provides code re-usability. It is used to achieve runtime polymorphism.
+
+Polymorphism
+//-----------//
+When one task is performed by different ways i.e. known as polymorphism. For example:
+to convince the customer differently, to draw something e.g. shape or rectangle etc.
+In java, we use method overloading and method overriding to achieve polymorphism.
+
+Abstraction
+//-----------//
+Hiding internal details and showing functionality is known as abstraction. For example: phone call,
+ we don't know the internal processing.
+In java, we use abstract class and interface to achieve abstraction.
+
+Encapsulation
+//-----------//
+Binding (or wrapping) code and data together into a single unit is known as encapsulation.
+For example: capsule, it is wrapped with different medicines.
+A java class is the example of encapsulation. Java bean is the fully encapsulated class because
+ all the data members are private here.
+
+Name	            Convention
+class name	        should start with uppercase letter and be a noun e.g.
+                    String, Color, Button, System, Thread etc.
+interface name	    should start with uppercase letter and be an adjective
+                    e.g. Runnable, Remote, ActionListener etc.
+method name	        should start with lowercase letter and be a verb
+                    e.g. actionPerformed(), main(), print(), println() etc.
+variable name	    should start with lowercase letter e.g. firstName, orderNumber etc.
+package name	    should be in lowercase letter e.g. java, lang, sql, util etc.
+constants name	    should be in uppercase letter. e.g. RED, YELLOW, MAX_PRIORITY etc.
+
+If a class have an entity reference, it is known as Aggregation. Aggregation represents HAS-A relationship.
+    class Employee{
+        int id;
+        String name;
+        Address address;//Address is a class
+        ...
+    }
+
+Overloading:
+//-----------//
+If a class has multiple methods having same name but different in parameters, it is known as Method Overloading.
+There are two ways to overload the method in java
+    By changing number of arguments
+    By changing the data type
+In java, Method Overloading is not possible by changing the return type of the method only.
+
+Overriding:
+//-----------//
+If subclass (child class) has the same method as declared in the parent class, it is known as method overriding in java.
+Rules for Java Method Overriding
+    method must have same name as in the parent class
+    method must have same parameter as in the parent class.
+    must be IS-A relationship (inheritance).
+
+Why we cannot override static method?
+because static method is bound with class whereas instance method is bound with object.
+ Static belongs to class area and instance belongs to heap area.
+
+Covariant Return Type (method overriding)
+//-----------//
+The covariant return type specifies that the return type may vary in the same direction as the subclass.
+Before Java5, it was not possible to override any method by changing the return type.
+But now, since Java5, it is possible to override method by changing the return type if
+subclass overrides any method whose return type is Non-Primitive but it changes its return type to subclass type.
+
+    class A{
+        A get(){return this;}
+        }
+
+    class B1 extends A{
+        B1 get(){return this;}
+        void message(){System.out.println("welcome to covariant return type");}
+
+        public static void main(String args[]){
+            new B1().get().message();
+        }
+    }
+
+Usage of java super Keyword
+    super can be used to refer immediate parent class instance variable.
+    super can be used to invoke immediate parent class method.
+    super() can be used to invoke immediate parent class constructor.
+
+Instance initializer block:
+//-----------//
+Instance Initializer block is used to initialize the instance data member.
+It run each time when object of the class is created.
+class Bike8{
+    int speed;
+
+    Bike8(){System.out.println("constructor is invoked");}
+
+    {System.out.println("instance initializer block invoked");}
+
+    public static void main(String args[]){
+    Bike8 b1=new Bike8();
+    Bike8 b2=new Bike8();
+    }
+}
+Output:instance initializer block invoked
+       constructor is invoked
+       instance initializer block invoked
+       constructor is invoked
+
+In the above example, it seems that instance initializer block is firstly invoked but NO.
+Instance initializer block is invoked at the time of object creation. The java compiler copies
+ the instance initializer block in the constructor after the first statement super().
+ So firstly, constructor is invoked
+
+
+Runtime polymorphism or Dynamic Method Dispatch is a process in which a call to an overridden
+method is resolved at runtime rather than compile-time.
+
+class Bike{
+  void run(){System.out.println("running");}
+}
+class Splender extends Bike{
+  void run(){System.out.println("running safely with 60km");}
+
+  public static void main(String args[]){
+    Bike b = new Splender();//upcasting
+    b.run();
+  }
+}
+Output:running safely with 60km.
+
+The java instanceof operator is used to test whether the object is an instance of the specified
+ type (class or subclass or interface).
+
+a instanceof B
+or
+B.class.isAssignableFrom(a.getClass())
+
+->when 'a' is null, the first returns false, while the second throws an exception.
+->When using instanceof, you need to know the class of B at compile time.
+When using isAssignableFrom() it can be dynamic and change during runtime.
+
+
+Interfaces:
+//-----------//
+Interface fields are public, static and final by default, and methods are public and abstract.
+
+Java8 Interfaces:
+Since Java 8, we can have method body in interface. But we need to make it default method.
+    interface Drawable{
+        void draw();
+        default void msg(){System.out.println("default method");}
+     }
+    class Rectangle implements Drawable{
+        public void draw(){System.out.println("drawing rectangle");}
+    }
+    class TestInterfaceDefault{
+        public static void main(String args[]){
+        Drawable d=new Rectangle();
+        d.draw();
+        d.msg();
+    }}
+
+Since Java 8, we can have static method in interface
+    interface Drawable{
+        void draw();
+        static int cube(int x){return x*x*x;}
+    }
+    class Rectangle implements Drawable{
+        public void draw(){System.out.println("drawing rectangle");}
+    }
+    class TestInterfaceStatic{
+        public static void main(String args[]){
+        Drawable d=new Rectangle();
+        d.draw();
+        System.out.println(Drawable.cube(3));
+    }}
+
+AccessModifiers:
+//-----------//
+    private - The private access modifier is accessible only within class.
+    default - If you don't use any modifier, it is treated as default by default.
+    The default modifier is accessible only within package.
+    protected - The protected access modifier is accessible within package and
+    outside the package but through inheritance only.
+    public - The public access modifier is accessible everywhere.
+    It has the widest scope among all other modifiers.
+
+AccessMod    withinclass	withinpackage	outsidepackage  outsidepackage
+                                              bysubclassonly
+Private	        Y	            N	            N	                N
+Default	        Y	            Y	            N	                N
+Protected	    Y	            Y	            Y	                N
+Public	        Y	            Y	            Y	                Y
+
+Arrays:
+//-----------//
+Normally, array is a collection of similar type of elements that have contiguous memory location.
+Random access: We can get any data located at any index position.
+Size Limit: We can store only fixed size of elements in the array. It doesn't grow its size at runtime.
+
+Strictfp:
+//-----------//
+Java strictfp keyword ensures that you will get the same result on every platform if
+you perform operations in the floating-point variable.
+The strictfp keyword can be applied on methods, classes and interfaces.
+
+    strictfp class A{}//strictfp applied on class
+
+    strictfp interface M{}//strictfp applied on interface
+
+    class A{
+    strictfp void m(){}//strictfp applied on method
+    }
+
+Exceptions:
+//-----------//
+Important classes of Java Exception Hierarchy
+    java.lang.Throwable is at the root of Java’s exception hierarchy. All types of exception are descendants of Throwable.
+    java.lang.Exception is direct sub-class of Throwable. Exception is the root class for all checked exceptions in Java.
+    java.lang.RuntimeException is direct sub-class of Exception. RuntimeException is the root class for all unchecked exceptions in Java.
+    java.lang.Error is direct sub-class of Throwable and represents unrecoverable JVM errors.
+
+Exceptions – Also known as checked exceptions, these are the sub-classes of java.lang.Exception class.
+ Whenever a piece of code is likely to throw a checked exception, then either it must be caught using
+  a try-catch block or the signature of the method containing such code should specify this exception in the throws clause.
+Examples– FileNotFoundException, IOException.
+
+Runtime Exceptions – Also known as unchecked exceptions, these are the sub-classes of java.lang.RuntimeException.
+These exceptions are specified for scenarios which neither need to be specifically caught using try-catch block
+ nor do the methods which can throw them need to include these exceptions in the throws clause.
+Examples– ArrayIndexOutOfBoundsException, NullPointerException.
+
+Errors – Errors are sub-classes of java.lang.Error class. These exceptions are thrown by JVM when
+it encounters severe issues such as if it runs out of memory and similar serious error conditions.
+ These errors should not be caught and should be dealt with on priority as they may lead to significant glitches in deployed code.
+Examples– OutOfMemoryError, StackOverflowError.
+
+Java finally block is a block that is used to execute important code such as closing connection, stream etc.
+Java finally block is always executed whether exception is handled or not.
+Java finally block follows try or catch block
+class TestFinallyBlock{
+  public static void main(String args[]){
+  try{
+   int data=25/5;
+   System.out.println(data);
+  }
+  catch(NullPointerException e){System.out.println(e);}
+  finally{System.out.println("finally block is always executed");}
+  System.out.println("rest of the code...");
+  }
+}
+
+try with resources:
+//-----------//
+try ( final InputStream in = Files.newInputStream( path ) ) {
+	    // code here
+}catch( IOException ex) {...}
+
+It is strongly advised that all user-defined exceptions should be inherited from RuntimeException class and fall into the class of unchecked exceptions
+
+
+Threads:
+//-----------//
+There are two ways to create a thread:
+    By extending Thread class
+    By implementing Runnable interface.
+
+Commonly used Constructors of Thread class:
+    Thread()
+    Thread(String name)
+    Thread(Runnable r)
+    Thread(Runnable r,String name)
+
+Runnable:
+The Runnable interface should be implemented by any class whose instances are intended to be executed by a thread. Runnable interface have only one method named run().
+    public void run(): is used to perform action for a thread.
+
+class Multi extends Thread{
+    public void run(){
+        System.out.println("thread is running...");
+    }
+    public static void main(String args[]){
+        Multi t1=new Multi();
+        t1.start();
+     }
+}
+
+class Multi3 implements Runnable{
+    public void run(){
+        System.out.println("thread is running...");
+    }
+
+    public static void main(String args[]){
+        Multi3 m1=new Multi3();
+        Thread t1 =new Thread(m1);
+        t1.start();
+     }
+}
+
+The join() method
+The join() method waits for a thread to die. In other words, it causes the currently
+running threads to stop executing until the thread it joins with completes its task.
+
+Java Thread pool represents a group of worker threads that are waiting for the job and reuse many times.
+In case of thread pool, a group of fixed size threads are created. A thread from the thread pool
+ is pulled out and assigned a job by the service provider. After completion of the job,
+  thread is contained in the thread pool again.
+
+     public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(5);//creating a pool of 5 threads
+        for (int i = 0; i < 10; i++) {
+            Runnable worker = new WorkerThread("" + i);
+            executor.execute(worker);//calling execute method of ExecutorService
+          }
+        executor.shutdown();
+        while (!executor.isTerminated()) {   }
+
+        System.out.println("Finished all threads");
+    }
+
+Wait for result using Callable - Future object:
+    Future< Long > result = executor.submit( new Callable< Long >() {
+         @Override
+         public Long call() throws Exception {
+            // Some implementation here
+            return ...;
+         }
+    } );
+
+    Long value = result.get( 1, TimeUnit.SECONDS );
+If result of the computation is not available within specified timeout,
+the TimeoutException exception will be raised. There is an overloaded version of get()
+which waits forever but please prefer to use the one with timeout
+
+
+Java Shutdown hook:
+//-----------//
+The shutdown hook can be used to perform cleanup resource or save the state when JVM
+shuts down normally or abruptly. Performing clean resource means closing log file,
+sending some alerts or something else. So if you want to execute some code
+ before JVM shuts down, use shutdown hook.
+
+ class MyThread extends Thread{
+     public void run(){
+         System.out.println("shut down hook task completed..");
+     }
+ }
+
+ public class TestShutdown1{
+     public static void main(String[] args)throws Exception {
+
+     Runtime r=Runtime.getRuntime();
+     r.addShutdownHook(new MyThread());
+
+     System.out.println("Now main sleeping... press ctrl+c to exit");
+     try{Thread.sleep(3000);}catch (Exception e) {}
+     }
+ }
+
+ Output:Now main sleeping... press ctrl+c to exit
+        shut down hook task completed..
+
+Synchronization:
+//-----------//
+Synchronization in java is the capability to control the access of multiple threads to any shared resource.
+Java Synchronization is better option where we want to allow only one thread to access the shared resource.
+
+Java synchronized method
+If you declare any method as synchronized, it is known as synchronized method.
+Synchronized method is used to lock an object for any shared resource.
+When a thread invokes a synchronized method, it automatically acquires the lock for that
+object and releases it when the thread completes its task.
+
+
+Synchronized block in java
+Synchronized block can be used to perform synchronization on any specific resource of the method.
+Suppose you have 50 lines of code in your method, but you want to synchronize only 5 lines, you can use synchronized block.
+
+synchronized (object reference expression) {
+  //code block
+}
+
+Wait/Notify:
+//-----------//
+private Object lock = new Object();
+
+public void performAction() {
+    synchronized( lock ) {
+        while( <condition> ) {
+            // Causes the current thread to wait until
+            // another thread invokes the notify() or notifyAll() methods.
+            lock.wait();
+        }
+
+        // Some implementation here
+    }
+}
+Method wait() releases the monitor lock the current thread holds because the
+condition it is waiting for is not met yet (wait() method must be called in
+a loop and should never be called outside of a loop). Consequently, another thread
+waiting on the same monitor gets a chance to run. When this thread is done, it should
+call one of notify()/notifyAll() methods to wake up the thread (or threads) waiting for the monitor lock.
+
+
+Generics:
+//-----------//
+It is a very powerful concept (which came up quite a while ago) that allows to
+develop abstract algorithms and data structures and to provide concrete types to operate on later
+
+public interface GenericInterfaceOneType< T > {
+    void performAction( final T action );
+}
+
+public class ClassImplementingGenericInterface
+        implements GenericInterfaceOneType< String > {
+    @Override
+    public void performAction( final String action ) {
+        // Implementation here
+    }
+}
+
+Limitations:
+Firstly, primitive types (like int, long, byte, …) are not allowed to be used in generics
+it is also not possible to create the array instances using generics’ type parameters.
+T[] actions = new T[ 0 ];
+
+The extends keyword restricts the type parameter to be a subclass of some other class or to implement one or more interfaces
+public< T extends InputStream > void read( final T stream ) {
+    // Some implementation here
+}
+The type parameter T in the read method declaration is required to be a subclass of the InputStream class.
+
+public void store( final Collection< ? extends Serializable > objects ) {
+    // Some implementation here
+}
+The method store does not really care what type parameters it is being called with, the only thing it needs
+to ensure that every type implements Serializable interface.
+
+Diamond operator( java 7)
+final Map< String, Collection< String > > map =
+    new HashMap< String, Collection< String > >();
+    TO
+final Map< String, Collection< String > > map = new HashMap<>();
+
+
+Annotations:
+//-----------//
+annotations are a special kind of metadata which could be associated with different elements
+and constructs of the Java language.
+
+public @interface SimpleAnnotation {
+}
+
+The @interface keyword introduces new annotation type. That is why annotations could be treated
+as specialized interfaces. Annotations may declare the attributes with or without default values, for example:
+
+public @interface SimpleAnnotationWithAttributes {
+    String name();
+    int order() default 0;
+}
+
+@SimpleAnnotationWithAttributes( name = "new annotation" )
+
+@Retention( RetentionPolicy.RUNTIME ) - Annotations are to be recorded in the class file by the compiler
+and retained by the VM at run time, so they may be read reflectively.
+@Retention( RetentionPolicy.CLASS ) - Annotations are to be recorded in the class file by the compiler
+but need not be retained by the VM at run time
+@Retention( RetentionPolicy.SOURCE ) - Annotations are to be discarded by the compiler.
+
+@Target( { ElementType.FIELD, ElementType.METHOD } )
+@Retention( RetentionPolicy.RUNTIME )
+public @interface AnnotationWithTarget {
+}
+
+Uses:
+Instructions to the compiler, Runtime instructions using Reflections.
+
+Collections:
+//-----------//
+Java Collection framework provides many interfaces (Set, List, Queue, Deque etc.) and classes
+ (ArrayList, Vector, LinkedList, PriorityQueue, HashSet, LinkedHashSet, TreeSet etc).
+
+collection interface methods:
+//-----------//
+boolean add(obj);
+boolean addAll(Collection s);
+boolean remove(obj);
+int size();
+void clear();
+boolean contains(), containsAll();
+public Iterator iterator();
+Object[] toArray();
+isEmpty();
+
+ArrayList:
+//-----------//
+Can contain duplicates, maintains insertion order,
+non synchronized, random access based on index.
+methods: indexOf,clone, lastIndexOf,..
+
+LinkedList:
+//-----------//
+Can contain duplicates, maintains insertion order,
+non synchronized.
+methods:addFirst, addLast, getFirst, getLast, indexOf..
+
+ListIterator...can be used to move backward also..
+
+HashSet:
+//-----------//
+stores elements based on hashing:
+contains only unique elements
+
+hashing:
+//-----------//
+In HashMap, hashCode() is used to calculate the bucket and therefore calculate the index.
+equals method is used to check that 2 objects are equal or not. This method is provided by Object class
+HashMap uses equals() to compare the key whether the are equal or not. If equals() method return true, they are equal otherwise not equal.
+A bucket is one element of HashMap array. It is used to store nodes. Two or more nodes can have the same bucket.
+In that case link list structure is used to connect the nodes. Buckets are different in capacity.
+
+collision:
+//-----------//
+hashing collision means more than one key having the same hash value, thus assigned to the same bucket. In that case objects are stored in a linked list, refer figure for more clarity.
+Where hashCode method helps in finding the bucket where that key is stored, equals method helps in finding the right key as there may be more than one key-value pair stored in a single bucket.
+
+HashMap:
+//-----------//
+key value based..only unique keys, one null key allowed,
+no order maintained, multiple null values are allowed. fast
+
+HashTable:
+//-----------//
+same as hashmap, but synchronized.
+cannot have null keys or values. slow
+
+Fail Fast vs fail safe iterators:
+//-----------//
+Concurrent modification:
+When one or more thread is iterating over the collection, in between,
+one thread changes the structure of the collection (either adding the element to the collection
+or by deleting the element in the collection or by updating the value at particular position
+in the collection) is known as Concurrent Modification
+
+
+Fail fast iterator while iterating through the collection , instantly throws Concurrent
+Modification Exception if there is structural modification  of the collection .
+ Thus, in the face of concurrent modification, the iterator fails quickly and cleanly
+They maintain an internal flag for modification, mods - to identify modifications
+
+Fail Safe Iterator makes copy of the internal data structure (object array) and iterates
+ over the copied data structure.Any structural modification done to the iterator affects
+  the copied data structure.  So , original data structure remains  structurally unchanged.
+   Hence , no ConcurrentModificationException throws by the fail safe iterator.
+
+	                       FailFastIterator 	FailSafeIterator
+Throw Concurrent
+Modification Exception	      Yes                   	No
+Clone object 	                No	                    Yes
+Memory Overhead	                No	                    Yes
+Examples	                HashMap,Vector,     CopyOnWriteArrayList,
+                           ArrayList,HashSet      ConcurrentHashMap
+
+Collections class:
+//-----------//
+The java.util.Collections class consists exclusively of static methods that operate on or return collection
+
+methods:
+static <T> int binarySearch(List<? extends Comparable<? super T>> list, T key)
+    This method searches the specified list for the specified object using the binary search algorithm.
+
+static <T> void copy(List<? super T> dest, List<? extends T> src)
+    This method copies all of the elements from one list into another.
+
+static void reverse(List<?> list)
+    This method reverses the order of the elements in the specified list.
+
+static <T> void sort(List<T> list, Comparator<? super T> c)
+    This method sorts the specified list according to the order induced by the specified comparator.
+
+static <T> Collection<T> unmodifiableCollection(Collection<? extends T> c)
+    This method returns an unmodifiable view of the specified collection.
+
+static <T> Collection<T> synchronizedCollection(Collection<T> c)
+static <T> List<T> synchronizedList(List<T> list)
+static <K,V> Map<K,V> synchronizedMap(Map<K,V> m)
+static <T> Set<T> synchronizedSet(Set<T> s)
+
+Comparable and Comparator:
+//-----------//
+
+Comparable	Comparator
+1a) Comparable provides single sorting sequence. In other words, we can sort the collection on the basis of single element such as id or name or price etc.
+1b) Comparator provides multiple sorting sequence. In other words, we can sort the collection on the basis of multiple elements such as id, name and price etc.
+2a) Comparable affects the original class i.e. actual class is modified.
+2b)Comparator doesn't affect the original class i.e. actual class is not modified.
+3a) Comparable provides compareTo() method to sort elements.
+3b)Comparator provides compare() method to sort elements.
+4a) Comparable is found in java.lang package.
+4b)Comparator is found in java.util package.
+5a) We can sort the list elements of Comparable type by Collections.sort(List) method.
+5b)We can sort the list elements of Comparator type by Collections.sort(List,Comparator) method.
+
+Comparable:
+//-----------//
+public class Country implements Comparable{
+       @Override
+    public int compareTo(Object arg0) {
+        Country country=(Country) arg0;
+        return (this.countryId < country.countryId ) ? -1: (this.countryId > country.countryId ) ? 1:0 ;
+}}
+If any class implements comparable interface then collection of that object can be sorted automatically
+using Collection.sort() or Arrays.sort().Object will be sort on the basis of compareTo method in that class.
+
+Comparator:
+//-----------//
+ Class whose objects to be sorted do not need to implement this interface.Some third class can implement this interface to sort
+
+public class CountrySortByIdComparator implements Comparator<Country>{
+    @Override
+    public int compare(Country country1, Country country2) {
+        return (country1.getCountryId() < country2.getCountryId() ) ?
+         -1: (country1.getCountryId() > country2.getCountryId() ) ? 1:0 ;
+    }
+}
+
+Anonymous sorting:
+           Collections.sort(listOfCountries,new Comparator<Country>() {
+
+               @Override
+               public int compare(Country o1, Country o2) {
+
+                   return o1.getCountryName().compareTo(o2.getCountryName());
+               }
+           });
+
+final Set< String > strings =
+    Collections.synchronizedSet( new HashSet< String >() );
+
+final Map< String, String > keys =
+    Collections.synchronizedMap( new HashMap< String, String >()
+
+
+Reflection:
+//-----------//
+Reflection is an extremely useful and powerful feature which significantly expands the capabilities of the program
+ to perform its own inspections, modifications or transformations during its execution, without a single line of code change.
+
+final Method[] methods = String.class.getMethods();
+for( final Method method: methods ) {
+    System.out.println( method.getName() );
+}
+
+Probably the most demanded use cases for reflection revolve around annotation processing.
+@Retention( RetentionPolicy.RUNTIME )
+@Target( ElementType.TYPE )
+public @interface ExampleAnnotation {
+    // Some attributes here
+}
+
+@ExampleAnnotation
+public class ExampleClass {
+    // Some getter and setters here
+}
+
+final ExampleAnnotation annotation =
+    ExampleClass.class.getAnnotation( ExampleAnnotation.class );
+
+if( annotation != null ) {
+    // Some implementation here
+}
+
+
+Transient
+volatile
+equals and hashcode
+servlets
+jsp
+files
+ThreadLocal
+java 7
+java 8
+
+spring
+spring mvc
+hibernate
+webservices
+rest
