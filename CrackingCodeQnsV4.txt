@@ -60,3 +60,97 @@ Q2) Integer to Roman
         //System.out.printf("%d %d %d %d",one,ten,hundred,thousand);
         return thousands[thousand]+hundreds[hundred]+tens[ten]+ones[one];
     }
+
+//**********************************************************************************//
+02/14/18
+Q3) Flatten nested iterator
+
+/*Given a nested list of integers, implement an iterator to flatten it.
+Each element is either an integer, or a list -- whose elements may also be integers or other lists.
+ Example 1:   Given the list [[1,1],2,[1,1]],
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,1,2,1,1].
+ Example 2:    Given the list [1,[4,[6]]],
+By calling next repeatedly until hasNext returns false, the order of elements returned by next should be: [1,4,6].*/
+
+  // This is the interface that allows for creating nested lists.
+  // You should not implement it, or speculate about its implementation
+  interface NestedInteger {
+
+      // @return true if this NestedInteger holds a single integer, rather than a nested list.
+      public boolean isInteger();
+
+      // @return the single integer that this NestedInteger holds, if it holds a single integer
+      // Return null if this NestedInteger holds a nested list
+      public Integer getInteger();
+      // @return the nested list that this NestedInteger holds, if it holds a nested list
+      // Return null if this NestedInteger holds a single integer
+      public List<NestedInteger> getList();
+  }
+
+public class FlattenNestedIterator implements Iterator<Integer> {
+    List<Integer> list = new ArrayList<>();
+    int size =0;
+
+
+    public FlattenNestedIterator(List<NestedInteger> nestedList) {
+        addRecursively(nestedList,list);
+        size = list.size();
+        //returning from the end...so reverse the list
+        Collections.reverse(list);
+    }
+
+    public void addRecursively(List<NestedInteger> nestedList, List<Integer> list){
+        for(NestedInteger nInt: nestedList){
+            if(nInt.isInteger()){
+                list.add(nInt.getInteger());
+            } else {
+                addRecursively(nInt.getList(), list);
+            }
+        }
+    }
+    @Override
+    public Integer next() {
+        if(size > 0)
+            return list.remove(--size);
+        return null;
+    }
+    @Override
+    public boolean hasNext() {
+        if(size>0)return true;
+        return false;
+    }
+}
+
+//**********************************************************************************//
+02/14/18
+Q4) Unique Paths
+
+
+/*    A robot is located at the top-left corner of a m x n grid (marked 'Start' in the diagram below).
+    The robot can only move either down or right at any point in time.
+    The robot is trying to reach the bottom-right corner of the grid (marked 'Finish' in the diagram below).
+    How many possible unique paths are there?  */
+
+    public static int uniquePaths(int m, int n) {
+        if(m==0 || n==0) return 0;
+
+        int[][] table = new int[m][n];
+        int rowLen = table.length, colLen = table[0].length;
+
+        //initialize first row and column to 1's...only 1 way of going
+        for(int i=0; i<rowLen; i++){
+            table[i][0] = 1;
+        }
+        for(int i=0; i<colLen; i++){
+            table[0][i] = 1;
+        }
+
+        //for any other entry, take the previous top and left  values and add them..
+        //this gives all combinations for that particular cell.
+        for(int i=1; i<rowLen; i++){
+            for(int j=1; j<colLen;j++){
+                table[i][j]=table[i-1][j]+table[i][j-1];
+            }
+        }
+        return table[m-1][n-1];
+    }

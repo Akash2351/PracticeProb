@@ -707,19 +707,243 @@ if( annotation != null ) {
     // Some implementation here
 }
 
-
 Transient
-volatile
-equals and hashcode
-servlets
-jsp
-files
-ThreadLocal
-java 7
-java 8
+//-----------//
+Java transient keyword is used in serialization. If you define any data member as transient, it will not be serialized.
+It marks a member variable not to be serialized when it is persisted to streams of bytes.
+When an object is transferred through the network, the object needs to be 'serialized'.
+ Serialization converts the object state to serial bytes. Those bytes are sent
+  over the network and the object is recreated from those bytes. Member variables marked by the java
+   transient keyword are not transferred, they are lost intentionally.
 
-spring
-spring mvc
-hibernate
-webservices
-rest
+volatile
+//-----------//
+The Java volatile keyword guarantees visibility of changes to variables across threads
+The value of this variable will never be cached thread-locally: all reads and writes will go straight to "main memory";
+
+The volatile keyword now ensures that multiple threads handle the singleton instance correctly.
+// Works with acquire/release semantics for volatile
+// Broken under Java 1.4 and earlier semantics for volatile
+class Foo {
+    private volatile Helper helper = null;
+    public Helper getHelper() {
+        Helper result = helper;
+        if (result == null) {
+            synchronized(this) {
+                result = helper;
+                if (result == null) {
+                    helper = result = new Helper();
+                }
+            }
+        }
+        return result;
+    }
+
+    // other functions and members...
+}
+
+equals and hashcode
+//-----------//
+
+    If object1 and object2 are equal according to their equals() method, they must also have the same hash code.
+    If object1 and object2 have the same hash code, they do NOT have to be equal too.
+
+You must override hashCode() in every class that overrides equals().
+ Failure to do so will result in a violation of the general contract for Object.hashCode(),
+ which will prevent your class from functioning properly in conjunction with all hash-based collections,
+  including HashMap, HashSet, and Hashtable.
+
+servlets
+//-----------//
+jsp
+//-----------//
+files
+//-----------//
+
+ThreadLocal
+//-----------//
+The ThreadLocal class in Java enables you to create variables that can only be
+ read and written by the same thread. Thus, even if two threads are executing the same code,
+  and the code has a reference to a ThreadLocal variable, then the two threads
+  cannot see each other's ThreadLocal variables.
+
+private ThreadLocal myThreadLocal = new ThreadLocal();
+
+As you can see, you instantiate a new ThreadLocal object.
+ This only needs to be done once per thread. Even if different threads execute the same
+ code which accesses a ThreadLococal, each thread will see only its own ThreadLocal instance.
+
+private ThreadLocal<String> myThreadLocal = new ThreadLocal<String>();
+myThreadLocal.set("Hello ThreadLocal");
+String threadLocalValue = myThreadLocal.get();
+
+
+java 7
+//-----------//
+1) Diamond  operator
+Map<String, List<Trade>> trades = new TreeMap <> ();
+
+2)Using String in switch statements:
+3)try with resources:
+    try(resources_to_be_cleant){
+    // your code
+    }
+4)Multicatch statements:
+try{
+    methodThatThrowsThreeExceptions();
+    } catch(ExceptionOne | ExceptionTwo | ExceptionThree e) {
+    // log and deal with all Exceptions
+    }
+In the above case, the ExceptionTwo and ExceptionThree belong to a different hierarchy
+
+5)New file system NIO2.0
+Paths:A Path is simply a reference to a file path. It is the equivalent (and with more features) to java.io.File.
+public voidpathInfo() {
+            Path path= Paths.get("c:\Temp\temp");
+            System.out.println("Number of Nodes:"+ path.getNameCount());
+            System.out.println("File Name:"+ path.getFileName());
+            System.out.println("File Root:"+ path.getRoot());
+            System.out.println("File Parent:"+ path.getParent());
+      }
+
+
+java 8
+//-----------//
+1)Interface defaults and static methods:
+
+2)lambda
+Lambda expression helps us to write our code in functional style.
+(argument-list) -> {body}
+ //Thread Example without lambda
+        Runnable r1=new Runnable(){
+            public void run(){
+                System.out.println("Thread1 is running...");
+            }
+        };
+        Thread t1=new Thread(r1);
+        t1.start();
+ //Thread Example with lambda
+        Runnable r2=()->{
+                System.out.println("Thread2 is running...");
+        };
+        Thread t2=new Thread(r2);
+        t2.start();
+
+3)Method reference:
+Java 8 Method reference is used to refer method of functional interface . It is compact and easy form of lambda expression
+
+    1)Reference to a static method.
+    eg:ContainingClass::staticMethodName
+
+    public static int add(int a, int b){
+    return a+b;
+    }
+    public static float add(int a, float b){
+    return a+b;
+    }
+
+    BiFunction<Integer, Integer, Integer>adder1 = Arithmetic::add;
+    BiFunction<Integer, Float, Float>adder2 = Arithmetic::add;
+    int result1 = adder1.apply(10, 20);
+    float result2 = adder2.apply(10, 20.0f);
+
+    2)Reference to an instance method.
+    containingObject::instanceMethodName
+
+    class Arithmetic{
+        public int add(int a, int b){
+         return a+b;
+        }
+    }
+    public class InstanceMethodReference3 {
+        public static void main(String[] args) {
+            BiFunction<Integer, Integer, Integer>adder = new Arithmetic()::add;
+            int result = adder.apply(10, 20);
+            System.out.println(result);
+
+
+    3)Reference to a constructor.
+        ClassName::new
+
+4)Functional interface: An Interface that contains only one abstract method is known as functional interface.
+BiConsumer<T,U> 	It represents an operation that accepts two input arguments and returns no result.
+Consumer<T> 	It represents an operation that accepts a single argument and returns no result.
+Function<T,R> 	It represents a function that accepts one argument and returns a result.
+Predicate<T> 	It represents a predicate (boolean-valued function) of one argument.
+BiFunction<T,U,R> 	It represents a function that accepts two arguments and returns a a result.
+
+5)forEach:
+Java provides a new method forEach() to iterate the elements. It is defined in Iterable and Stream interfaces.
+
+        List<Product> list=new ArrayList<Product>();
+        list.add(new Product(1,"Samsung A5",17000f));
+        list.add(new Product(3,"Iphone 6S",65000f));
+        list.add(new Product(2,"Sony Xperia",25000f));
+        list.add(new Product(4,"Nokia Lumia",15000f));
+        list.add(new Product(5,"Redmi4 ",26000f));
+        list.add(new Product(6,"Lenevo Vibe",19000f));
+
+        // using lambda to filter data
+        Stream<Product> filtered_data = list.stream().filter(p -> p.price > 20000);
+
+        // using lambda to iterate through collection
+        filtered_data.forEach(
+                product -> System.out.println(product.name+": "+product.price)
+        );
+
+        Output:
+
+        Iphone 6S: 65000.0
+        Sony Xperia: 25000.0
+        Redmi4 : 26000.0
+
+
+6)Nashorn JavaScript Engine
+Nashorn is a JavaScript engine. It is used to execute JavaScript code dynamically at JVM (Java Virtual Machine).
+
+7)StringJoiner
+        StringJoiner joinNames = new StringJoiner(","); // passing comma(,) as delimiter
+
+        // Adding values to StringJoiner
+        joinNames.add("Rahul");
+        joinNames.add("Raju");
+        joinNames.add("Peter");
+        joinNames.add("Raheem");
+
+        System.out.println(joinNames);
+
+8)Collectors:
+Collectors is a final class that extends Object class. It provides reduction operations, such as accumulating elements into collections, summarizing elements according to various criteria, etc.
+
+List<Float> productPriceList =
+                productsList.stream()
+                            .map(x->x.price)         // fetching price
+                            .collect(Collectors.toList());  // collecting as list
+
+Set<Float>productPriceList =
+                productsList.stream()
+                            .map(x->x.price)         // fetching price
+                            .collect(Collectors.toSet());   // collecting as list
+
+9)Streams:
+Stream does not store elements. It simply conveys elements from a source such as a data structure, an array, or an I/O channel, through a pipeline of computational operations.
+The elements of a stream are only visited once during the life of a stream. Like an Iterator, a new stream must be generated to revisit the same elements of the source.
+
+functions:
+long count()
+Stream<T> distinct()
+Stream<T> filter(Predicate<? super T> predicate)
+void forEach(Consumer<? super T> action)
+<R> Stream<R> map(Function<? super T,? extends R> mapper)
+
+      List<Float> productPriceList2 =productsList.stream()
+                                     .filter(p -> p.price > 30000)// filtering data
+                                     .map(p->p.price)        // fetching price
+                                     .collect(Collectors.toList()); // collecting as list
+
+        productsList.stream()
+                             .filter(product -> product.price == 30000)
+                             .forEach(product -> System.out.println(product.name));
+
+and many more: https://www.javatpoint.com/java-8-features
+

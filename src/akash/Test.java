@@ -2,10 +2,7 @@ package akash;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Created by akash on 20-11-2017.
@@ -48,7 +45,34 @@ public class Test {
         }
     }
 
+    public static int solution(int[] A) {
+
+        int count = 0;
+
+        for (int i = 0; i < A.length; i++) {
+            HashSet<Integer> curSet = new HashSet<>();
+            for (int j = 0; j <= i; j++) {
+                curSet.add(A[j]);
+            }
+            if (curSet.containsAll(getSet(i))) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    public static HashSet<Integer> getSet(int n) {
+        HashSet<Integer> set = new HashSet<>();
+        for (int i = 1; i <= n + 1; i++) {
+            set.add(i);
+        }
+        return set;
+    }
+
     public static void main(String[] args) {
+
+        System.out.println(solution(new int[]{2, 1, 3, 5, 4, 7, 6}));
      /*   Test ts = new Test();
         TimeSeries t1 = ts.new TimeSeries("2015-05", "clicks", 23);
         TimeSeries t2 = ts.new TimeSeries("2015-05", "clicka", 23);
@@ -72,8 +96,10 @@ public class Test {
         //int[] arr = {3, 1, 5, 4, 2};
         // System.out.println(getBloomingNo(arr, 1));
 
-        System.out.println(numberNeeded("hello", "ell"));
+        // System.out.println(numberNeeded("hello", "ell"));
+
     }
+
 
     public static int numberNeeded(String first, String second) {
         char[] firstc = first.replaceAll("\\s", "").toCharArray();
