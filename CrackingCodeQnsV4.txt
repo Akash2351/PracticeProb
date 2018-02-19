@@ -327,3 +327,221 @@ Q8) Linked List cycle 2
         }
         return cycle;
     }
+
+//**********************************************************************************//
+02/17/18
+Q9) Rotate linked list.
+
+    /*Given a list, rotate the list to the right by k places, where k is non-negative.
+    Example:
+    Given 1->2->3->4->5->NULL and k = 2,
+    return 4->5->1->2->3->NULL.*/
+    public ListNode rotateRight(ListNode head, int k) {
+
+        if (head == null) return head;
+        //if there is only 1 node, any k will return same list...
+        if (k == 0 || head.next == null) return head;
+
+        ListNode temp = new ListNode(0);
+        temp.next = head;
+        ListNode first = temp, second = temp;
+
+        //calculate the len of list...coz k might be greater than len..use %
+        ListNode dummy = head;
+        int len = 0;
+        while (dummy != null) {
+            dummy = dummy.next;
+            len++;
+        }
+
+        k = k % len;
+        if (k == 0)
+            return head;
+
+        //move first pointer k nodes from head...
+        //later move first and second till first reached end...
+        //now break n join ends....
+        while (k > 0) {
+            first = first.next;
+            k--;
+        }
+
+        //if first reaches end, full list is rotated..so return head.
+        if (first.next == null)
+            return head;
+
+        while (first.next != null) {
+            first = first.next;
+            second = second.next;
+        }
+
+        //eg [1,2,3,4,5] , k=2 : first-5, second-3.
+        // start list from 4..i.e second.next...break list s.next = null.
+        ListNode newHead = second.next;
+        second.next = null;
+        first.next = head;
+        return newHead;
+    }
+
+//**********************************************************************************//
+02/18/18
+Q10) Rotate Array.
+//Rotate an array of n elements to the right by k steps.
+//For example, with n = 7 and k = 3, the array [1,2,3,4,5,6,7]
+// is rotated to [5,6,7,1,2,3,4].
+
+    public void rotate(int[] nums, int k) {
+        k = k%nums.length;
+
+        //reverse array approach:
+        /* 1)we have to first reverse the whole array by swapping
+         first element with the last one and so on…
+        you will get[7,6,5,4,3,2,1]
+
+        2)reverse the elements from 0 to k-1
+        reverse the elements 7,6,5
+        you will get [5,6,7,4,3,2,1]
+
+        3)reverse the elements from k to n-1
+        reverse the elements 4,3,2,1
+        you will get[5,6,7,1,2,3,4]*/
+
+        reverse(nums,0,nums.length-1);
+        reverse(nums,0,k-1);
+        reverse(nums,k,nums.length-1);
+
+        //second approach...using new array...
+        int[] copy = nums.clone();
+        for(int i=0; i<copy.length;i++){
+            nums[ (i+k)%copy.length] = copy[i];
+        }
+    }
+
+    public void reverse(int[] ary, int start, int end){
+        while(start< end){
+            int temp = ary[start];
+            ary[start] = ary[end];
+            ary[end] = temp;
+            start++; end--;
+        }
+    }
+
+//**********************************************************************************//
+02/18/18
+Q11) Permutation in String.
+/*Given two strings s1 and s2, write a function to return true if s2 contains
+    the permutation of s1. In other words, one of the first string's
+    permutations is the substring of the second string.
+Example 1:
+Input:s1 = "ab" s2 = "eidbaooo"
+Output:True
+Explanation: s2 contains one permutation of s1 ("ba").
+Example 2:
+Input:s1= "ab" s2 = "eidboaoo"
+Output: False*/
+
+    public boolean checkInclusion(String s1, String s2) {
+        if(s1 == null || s1.isEmpty()) return true;
+        if(s2 == null || s1.length() > s2.length()) return false;
+
+        //use the sliding window approach..similar to other problem...
+        //indices of string where anagram is found...
+
+        int len1 = s1.length(), len2 = s2.length();
+        for(int i=0;i<len2; i++){
+            if(i+len1 > len2 )break;
+            if(isAnagram(s1,s2.substring(i,i+len1)))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isAnagram(String s1, String s2){
+        int[] dict = new int[26];
+        for(char c: s1.toCharArray())
+            dict[c - 'a']++;
+        for(char c: s2.toCharArray()) {
+            dict[c - 'a']--;
+            if (dict[c - 'a'] < 0) return false;
+        }
+        return true;
+    }
+
+//**********************************************************************************//
+02/18/18
+Q12) Subsets.
+/*Given a set of distinct integers, nums, return all possible subsets (the power set).
+Note: The solution set must not contain duplicate subsets.
+For example,
+ If nums = [1,2,3], a solution is:
+            [
+            [3],
+            [1],
+            [2],
+            [1,2,3],
+            [1,3],
+            [2,3],
+            [1,2],
+            []
+            ] */
+
+
+    //same like permutation, phone no problem...
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> list = new ArrayList<>();
+        if(nums.length == 0) return list;
+
+        generateRecursive(nums.length,0, nums, new ArrayList<Integer>(),list);
+        list.add(Arrays.stream(nums).boxed().collect(Collectors.toList()));
+        return list;
+    }
+
+    public void generateRecursive(int len,int index, int[] nums, List<Integer> cur,
+            List<List<Integer>> list){
+        if(len <= 0 ) return;
+        //keep adding all combinations...
+        list.add(new ArrayList<Integer>(cur));
+
+        for(int i=index; i<nums.length; i++){
+            if(!cur.contains(nums[i])){
+                cur.add(nums[i]);
+                generateRecursive(len-1,i+1,nums,cur,list);
+                cur.remove(cur.size()-1);
+            }
+        }
+    }
+
+//**********************************************************************************//
+02/18/18
+Q13) Target Sum
+
+/*You are given a list of non-negative integers, a1, a2, ..., an, and a target, S.
+    Now you have 2 symbols + and -. For each integer, you should choose
+    one from + and - as its new symbol.
+Find out how many ways to assign symbols to make sum of integers equal to target S.
+ Example 1:
+Input: nums is [1, 1, 1, 1, 1], S is 3.
+Output: 5
+Explanation:
+            -1+1+1+1+1 = 3
+            +1-1+1+1+1 = 3
+            +1+1-1+1+1 = 3
+            +1+1+1-1+1 = 3
+            +1+1+1+1-1 = 3
+
+There are 5 ways to assign symbols to make the sum of nums be target 3.*/
+
+    static int count = 0;
+    public static int findTargetSumWays(int[] nums, int S) {
+        calculate(nums, 0, 0, S);
+        return count;
+    }
+    public static void calculate(int[] nums, int i, int sum, int S) {
+        if (i == nums.length) {
+            if (sum == S)
+                count++;
+        } else {
+            calculate(nums, i + 1, sum + nums[i], S);
+            calculate(nums, i + 1, sum - nums[i], S);
+        }
+    }

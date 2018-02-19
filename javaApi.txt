@@ -755,10 +755,192 @@ You must override hashCode() in every class that overrides equals().
 
 servlets
 //-----------//
+A Java Servlet is a Java object that responds to HTTP requests. It runs inside a Servlet container
+A Servlet is part of a Java web application. A Servlet container may run multiple web applications at the same time, each having multiple servlets running inside.
+
+Lifecycle:
+Typically, only a single isntance of the servlet is created, and concurrent requests to the servlet are executed on the same servlet instance.
+
+init(): executed only once when the servlet is first loaded.
+service(): executed multiple times, once for each request.
+destroy():is executed when the servlet container unloads the servlet.
+
+A Java Servlet is just an ordinary Java class which implements the interface
+javax.servlet.Servlet;
+The easiest way to implement this interface is to extend either the class GenericServlet or HttpServlet.
+
+public class SimpleServlet extends GenericServlet {
+public void service(ServletRequest request, ServletResponse response)
+        throws ServletException, IOException {
+       // do something in here
+  }
+}
+
+eg: http://jenkov.com/somePage.html?param1=hello¶m2=world
+The HttpServlet class reads the HTTP request, and determines if the request is an HTTP GET, POST, PUT, DELETE, HEAD etc. and calls one the corresponding method.
+
+public class SimpleHttpServlet extends HttpServlet {
+  protected void doGet( HttpServletRequest request,
+                        HttpServletResponse response)
+        throws ServletException, IOException {
+       String param1 = request.getParameter("param1");
+      response.getWriter().write("<html><body>GET response</body></html>");
+  }
+}
+
+methods: doGet()
+         doPost()
+         doHead()
+         doPut()
+         doDelete()
+
+HttpRequest methods:
+String contentLength = request.getHeader("Content-Length");
+InputStream requestBodyInput = request.getInputStream();
+
+HttpSession session = request.getSession();
+The HttpSession object represents a user session. A user session contains information about the user across multiple HTTP requests.
+session.setAttribute("userName", "theUserName");
+
+ServletContext context = request.getSession().getServletContext();
+The ServletContext contains meta information about the web application. For instance, you can access context parameters set in the web.xml file,
+context.setAttribute("someValue", "aValue");
+The attributes stored in the ServletContext are available to all servlets in your application, and between requests and sessions.
+
+
+The RequestDispatcher class enables your servlet to "call" another servlet from inside another servlet. The other servlet is called as if an HTTP request was sent to it by a browser.
+  RequestDispatcher requestDispatcher =
+    request.getRequestDispatcher("/anotherURL.simple");
+
+Servlet mapping: web.xml
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  <servlet>
+    <servlet-name>controlServlet</servlet-name>
+    <servlet-class>com.jenkov.butterfly.ControlServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>controlServlet</servlet-name>
+    <url-pattern>*.html</url-pattern>
+  </servlet-mapping>
+</web-app>
+
+//Other config examples:
+<servlet>
+    <servlet-name>controlServlet</servlet-name>
+    <servlet-class>com.jenkov.webui.ControlServlet</servlet-class>
+    <init-param><param-name>container.script.static</param-name>
+                <param-value>/WEB-INF/container.script</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+
+Servlet Filters:
+ A Servlet filter is an object that can intercept HTTP requests targeted at your web application.
+A servlet filter can intercept requests both for servlets, JSP's, HTML files or other static content.
+
+public class SimpleServletFilter implements Filter {
+
+    public void init(FilterConfig filterConfig) throws ServletException {   }
+
+    public void doFilter(ServletRequest request, ServletResponse response,
+                         FilterChain filterChain)
+    throws IOException, ServletException {
+            ...
+       String myParam = request.getParameter("myParam");
+       if(!"blockTheRequest".equals(myParam)){
+           filterChain.doFilter(request, response);
+       }
+    }
+    public void destroy() {  }
+}
+
+mapping:
+<filter>
+    <filter-name>myFilter</filter-name>
+    <filter-class>servlets.SimpleServletFilter</filter-class>
+</filter>
+
+<filter-mapping>
+    <filter-name>myFilter</filter-name>
+    <url-pattern>*.simple</url-pattern>
+</filter-mapping>
+
+
 jsp
 //-----------//
-files
+JSP technology is used to create web application just like Servlet technology. It can be thought of as an extension to servlet because it provides more functionality than servlet such as expression language, jstl etc.
+JSP page is translated into servlet by the help of JSP translator.
+
+A JSP page consists of HTML tags and JSP tags.
+ jspInit(), _jspService() and jspDestroy() are the life cycle methods of JSP.
+
+JSP scriptlet tags:
+A scriptlet tag is used to execute java source code in JSP.
+<%  java source code %>
+
+<% out.print("welcome to jsp"); %>
+<%
+String name=request.getParameter("uname");
+out.print("welcome "+name);
+%>
+
+JSP declaration tag
+<%!  field or method declaration %>
+<%! int data=50; %>
+
+JSP Implicit Objects
+There are 9 jsp implicit objects.
+These objects are created by the web container that are available to all the jsp pages
+out	 -> JspWriter
+request -> 	HttpServletRequest
+response -> 	HttpServletResponse
+config -> 	ServletConfig
+application -> 	ServletContext
+session -> 	HttpSession
+
+
+files - NIO (New IO)
 //-----------//
+ Java NIO consist of the following core components:
+    Channels
+    Buffers
+    Selectors
+
+Typically, all IO in NIO starts with a Channel. A Channel is a bit like a stream. From the Channel data can be read into a Buffer. Data can also be written from a Buffer into a Channel.
+- FileChannel, SocketChannel ..
+Buffers:
+ByteBuffer, CharBuffer,DoubleBuffer,IntBuffer..
+
+ Channels and Streams:
+ You can both read and write to a Channels. Streams are typically one-way (read or write).
+ Channels can be read and written asynchronously.
+
+Selectors:
+A Selector allows a single thread to handle multiple Channel's. This is handy if your application has many connections (Channels) open, but only has low traffic on each connection.
+
+Paths:
+ The Java Path interface was added to Java NIO in Java 7. The Path interface is located in the java.nio.file package.
+ A Java Path instance represents a path in the file system. A path can point to either a file or a directory. A path can be absolute or relative
+
+import java.nio.file.Path;
+import java.nio.file.Paths
+
+ Path path = Paths.get("c:\\data\\myfile.txt");
+Paths.get(basePath, relativePath)
+Path projects = Paths.get("d:\\data", "projects");
+Path currentDir = Paths.get(".");
+
+
+
+
+
 
 ThreadLocal
 //-----------//
