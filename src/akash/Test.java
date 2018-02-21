@@ -58,7 +58,6 @@ public class Test {
                 count++;
             }
         }
-
         return count;
     }
 
@@ -72,7 +71,7 @@ public class Test {
 
     public static void main(String[] args) {
 
-        System.out.println(solution(new int[]{2, 1, 3, 5, 4, 7, 6}));
+        // System.out.println(solution(new int[]{2, 1, 3, 5, 4, 7, 6}));
      /*   Test ts = new Test();
         TimeSeries t1 = ts.new TimeSeries("2015-05", "clicks", 23);
         TimeSeries t2 = ts.new TimeSeries("2015-05", "clicka", 23);
@@ -97,6 +96,17 @@ public class Test {
         // System.out.println(getBloomingNo(arr, 1));
 
         // System.out.println(numberNeeded("hello", "ell"));
+
+       /* HashMap<Character, Integer> map = new HashMap<>();
+        map.put('A',3);
+        map.put('B',2);
+        map.put('Z',5);
+        TreeMap<Character,Integer> treeMap = new TreeMap<>((e1,e2) -> {return map.get(e1).compareTo(map.get(e2));});
+        treeMap.putAll(map);
+        treeMap.entrySet().stream().forEach(e->System.out.println(e.getKey()+"-"+e.getValue()));
+        StringBuilder sb = new StringBuilder();
+        int div = 1;
+        sb.append(Character.toString((char)('A' - (div-1))));*/
 
     }
 

@@ -8,6 +8,7 @@ Format nos:
 Ascii range:
 A-Z : 65 to 90
 a-z : 97 to 122
+0-9 : 48-57
 
 //**********************************************************************************//
 Java:
@@ -937,10 +938,55 @@ Paths.get(basePath, relativePath)
 Path projects = Paths.get("d:\\data", "projects");
 Path currentDir = Paths.get(".");
 
+Files:
+The Files.exists() method checks if a given Path exists in the file system.
+Path path = Paths.get("data/logging.properties");
 
+boolean pathExists =
+        Files.exists(path,
+            new LinkOption[]{ LinkOption.NOFOLLOW_LINKS});
 
+Other examples:
 
+Path path = Paths.get("data/subdir");
+Path sourcePath      = Paths.get("data/logging.properties");
+Path destinationPath = Paths.get("data/logging-copy.properties");
 
+try {
+    Path newDir = Files.createDirectory(path);
+    Files.copy(sourcePath, destinationPath);
+    Files.copy(sourcePath, destinationPath,
+                StandardCopyOption.REPLACE_EXISTING);
+    Files.move(sourcePath, destinationPath,
+                            StandardCopyOption.REPLACE_EXISTING);
+    Files.delete(path);
+
+} catch(FileAlreadyExistsException e){
+    // the directory already exists.
+} catch (IOException e) {
+    //something else went wrong
+    e.printStackTrace();
+}
+
+Read from file:
+        String fileName = "c://lines.txt";
+		//read file into stream, try-with-resources
+		try (Stream<String> stream = Files.lines(Paths.get(fileName))) {
+
+			stream.forEach(System.out::println);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		try (BufferedReader br = Files.newBufferedReader(Paths.get(fileName))) {
+
+			//br returns as stream and convert it into a List
+			list = br.lines().collect(Collectors.toList());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
 ThreadLocal
 //-----------//
