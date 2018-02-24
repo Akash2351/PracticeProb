@@ -1175,3 +1175,95 @@ void forEach(Consumer<? super T> action)
 
 and many more: https://www.javatpoint.com/java-8-features
 
+Shallow Cloning
+ Is the default cloning strategy provided by Object.clone() which you are talking about. The clone() method of object class creates a new instance and copy all fields of the Cloneable object to that new instance (either it is primitive or reference). So in the case of reference types only reference bits gets copied to the new instance, therefore, the reference variable of both objects will point to the same object. The example we have seen above is an example of Shallow Cloning.
+
+Deep Cloning
+As the name suggest deep cloning means cloning everything from one object to another object. To achieve this we need to trick our clone() method to provide our own cloning strategy. We can do it by implementing Cloneable interface and override clone() method in every reference type we have in our object hierarchy and then call super.clone() and these clone() methods in our object’s clone method.
+But if you look at the clone() method of ArrayList in the source code, you will see it is externally copying v.elementData = Arrays.copyOf(elementData, size); after calling super.clone(), which means clone() of ArrayList deeply copies it content
+
+Java collections internal working
+//-----------//
+
+ArrayList:
+//-----------//
+ArrayList is a resizable array implementation of the List interface i.e. ArrayList grows dynamically as the elements are added to it.
+- when elements are added, internally a new array of bigger size is created and elements are copied.
+
+internal array:
+transient Object[] elementData;
+-> initial capacity default is 10.
+or new ArrayList<>(30); size is 30 initially.
+
+dynamic growth:
+    public boolean add(E e) {
+        ensureCapacity(size + 1);  // Increments modCount!!
+        elementData[size++] = e;
+        return true;
+    }
+
+      public void ensureCapacity(int minCapacity) {
+  		modCount++;
+  		int oldCapacity = elementData.length;
+  		if (minCapacity > oldCapacity) {
+  			Object oldData[] = elementData;
+  			int newCapacity = (oldCapacity * 3)/2 + 1;
+  				if (newCapacity < minCapacity)
+  			newCapacity = minCapacity;
+  				// minCapacity is usually close to size, so this is a win:
+  				elementData = Arrays.copyOf(elementData, newCapacity);
+  		}
+      }
+
+Generally increases size by 1.5 times...
+    int newCapacity = oldCapacity + (oldCapacity >> 1); (java 8)
+
+Performance:
+ The add operation runs in amortized constant time, that is, adding n elements requires O(n) time. All of the other operations run in linear time.
+ The size, isEmpty, get, set, iterator, and listIterator operations run in constant time O(1).
+
+Cloning:
+Shallow copy does not mean that they point to the same memory location. That would be just an assignment:List b = a;.
+Cloning creates a new instance, holding the same elements. This means you have 2 different lists, but their contents are the same. If you change the state of an object inside the first list, it will change in the second list.
+
+However, you should consider not using clone(). It works fine with collections, but generally it's considered broken. Use the copy-constructors - new ArrayList(originalList)
+
+But if you look at the clone() method of ArrayList in the source code, you will see it is externally copying v.elementData = Arrays.copyOf(elementData, size); after calling super.clone(), which means clone() of ArrayList deeply copies it content.
+
+Set and HashSet
+//-----------//
+Set is a collection that contains no duplicate elements. So, it can contain at most one null.
+HashSet implements Set interface in java. It is not synchronized and is not thread safe.
+
+HashSet in Java, it internally create instance of backup Map with default initial capacity 16 and default load factor 0.75
+The capacity is the number of buckets in the hash table, and the initial capacity is simply the capacity at the time the hash table is created. The load factor is a measure of how full the hash table is allowed to get before its capacity is automatically increased.
+When the number of entries in the hash table exceeds the product of the load factor and the current capacity, the hash table is rehashed (that is, internal data structures are rebuilt) so that the hash table has approximately twice the number of buckets.
+
+public class HashSet
+    extends AbstractSet
+    implements Set, Cloneable, java.io.Serializable
+{
+    private transient HashMap<E,Object> map;
+
+    // Dummy value to associate with an Object in the backing Map
+    private static final Object PRESENT = new Object();
+
+    public HashSet() {
+        map = new HashMap<>();
+    }
+
+    public boolean add(E e) {
+        return map.put(e, PRESENT)==null;
+    }
+
+    /**
+    * Some code
+    */
+
+    public boolean remove(Object o) {
+       return map.remove(o)==PRESENT;
+    }
+}
+In HashMap, the put(Key k,Value V) method returns:
+    null, if the key is unique. The key will be added to the map.
+    old value of the key, if the key is duplicated.
