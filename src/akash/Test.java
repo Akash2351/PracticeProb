@@ -1,5 +1,6 @@
 package akash;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -30,6 +31,11 @@ public class Test {
         int div = 1;
         sb.append(Character.toString((char)('A' - (div-1))));*/
 
+        int[] visited = new int[5];
+        visited[2] = 1;
+        visited[3] = 1;
+        long cnt = Arrays.stream(visited).filter(t -> t == 1 ? true : false).count();
+        System.out.println(cnt);
     }
 
 

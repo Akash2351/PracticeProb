@@ -937,3 +937,278 @@ For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3.
 
         return left==null? right: left;
     }
+
+//**********************************************************************************//
+02/24/18
+Q24)Least Common Ancestor of Binary Search Tree..
+
+    public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
+        if(root == null) return root;
+        if(root == p || root == q) return root;
+
+        TreeNode left = null, right = null;
+        if(p.val < root.val || q.val < root.val)
+            left = lowestCommonAncestor(root.left,p,q);
+
+        if(p.val > root.val || q.val > root.val)
+            right = lowestCommonAncestor(root.right,p,q);
+
+        if(left!=null && right!=null) return root;
+        if(left==null && right==null) return null;
+
+        return left==null? right:left;
+}
+
+//**********************************************************************************//
+02/24/18
+Q25)Minimum height of a binary tree
+
+/*Given a binary tree, find its minimum depth.
+The minimum depth is the number of nodes along the shortest
+    path from the root node down to the nearest leaf node.*/
+
+    public int minDepth(TreeNode root) {
+        if(root == null) return 0;
+
+        int left = minDepth(root.left);
+        int right = minDepth(root.right);
+        return 1 + (Math.min(left, right) > 0 ? Math.min(left, right) : Math.max(left, right));
+    }
+
+
+//**********************************************************************************//
+02/24/18
+Q26)Set Matrix Zeros
+
+    //One solution would be store the indices where rows are 0
+    // and columns are 0. it would take int[m], int[n] additional space.
+    // this would be O(m+n)
+
+    //better solution would be to use the first row and column
+    // of the given matrix to store this values.
+    // the value for first row and col can be stored in two flags.
+    // so a constant space would be required...   O(1)
+
+        boolean rowZero = false;
+        boolean colZero = false;
+        int rowLen = matrix.length, colLen = matrix[0].length;
+
+        for(int i=0; i<rowLen; i++){
+            if(matrix[i][0] == 0) colZero = true;
+        }
+        for(int i=0; i<colLen; i++){
+            if(matrix[0][i] == 0) rowZero = true;
+        }
+
+        //set corresponding enteries in row[o] or col[0]..
+        //and track later and make entire row/ column 0's
+        for(int i=1; i<rowLen; i++){
+            for(int j=1; j<colLen; j++){
+                if(matrix[i][j] == 0){
+                    matrix[i][0] = 0;
+                    matrix[0][j] = 0;
+                }
+            }
+        }
+
+        //make the entire row/col 0's
+        for(int i=1; i<rowLen; i++){
+            for(int j=1; j<colLen; j++){
+                if(matrix[i][0] == 0 || matrix[0][j] == 0 ){
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+        //make first row zeros..
+        if(rowZero){
+            for(int i=0; i<colLen; i++)
+                matrix[0][i] = 0;
+        }
+        //make first col zeros.
+        if(colZero){
+            for(int i=0; i<rowLen; i++)
+                matrix[i][0] = 0;
+        }
+    }
+
+//**********************************************************************************//
+02/25/18
+Q27)Valid Graph tree
+
+/*  Given n nodes labeled from 0 to n - 1 and a list of undirected edges
+ (each edge is a pair of nodes), write a function to check whether these
+  edges make up a valid tree.
+    For example:
+    Given n = 5 and edges = [[0, 1], [0, 2], [0, 3], [1, 4]], return true.
+    Given n = 5 and edges = [[0, 1], [1, 2], [2, 3], [1, 3], [1, 4]], return false.
+    Note: you can assume that no duplicate edges will appear in edges.
+    Since all edges are undirected, [0, 1] is the same as [1, 0] and thus
+     will not appear together in edges*/
+
+
+    public boolean validTree(int n, int[][] edges) {
+        // initialize adjacency list
+        List<List<Integer>> adjList = new ArrayList<List<Integer>>(n);
+
+        // initialize vertices
+        for (int i = 0; i < n; i++)
+            adjList.add(i, new ArrayList<Integer>());
+
+        // add edges
+        for (int i = 0; i < edges.length; i++) {
+            int u = edges[i][0], v = edges[i][1];
+            adjList.get(u).add(v);
+            adjList.get(v).add(u);
+        }
+
+
+        boolean[] visited = new boolean[n];
+        Stack<Integer> stack = new Stack<>();
+
+        //dfs
+        stack.add(edges[0][0]);
+        visited[edges[0][0]] = true;
+
+        while(!stack.isEmpty()){
+            int node = stack.peek();
+            int notVisitedNode  = getUnvisitedNode(node,adjList,visited);
+            if(notVisitedNode != -1){
+                stack.push(notVisitedNode);
+                visited[notVisitedNode] = true;
+            } else {
+                stack.pop();
+            }
+        }
+        //check for cycles...if edges = n-1, no cycles
+        if(edges.length > n-1)
+            return false;
+
+        // make sure all vertices are connected
+        for (int i = 0; i < n; i++) {
+            if (!visited[i])
+                return false;
+        }
+        return true;
+    }
+
+    public int getUnvisitedNode(int node, List<List<Integer>> adjList, boolean[] visited){
+        List<Integer> list = adjList.get(node);
+        if(list == null) return -1;
+        for(Integer n: list)
+            if(!visited[n]) return n;
+
+        return -1;
+    }
+
+    public static void main(String[] args) {
+        ValidGraphTree graph = new ValidGraphTree();
+        int grph[][] = new int[][]{
+                {1, 0},
+                {2,0}};
+        System.out.println(graph.validTree(3,grph));
+    }
+
+//**********************************************************************************//
+02/25/18
+Q28)pascal triangle 2
+
+/*  Given an index k, return the kth row of the Pascal's triangle.
+    For example, given k = 3,
+    Return [1,3,3,1].
+    Note:
+    Could you optimize your algorithm to use only O(k) extra space?  */
+
+    public List<Integer> getRow(int rowIndex) {
+        //when n==0, list will have 1...1st row
+        //this base case is taken care of
+
+        //to store the results of each row
+        //and keep using and updating the same for subsequent rows
+        Integer[] res = new Integer[rowIndex+1];
+        Arrays.fill(res,0);
+        //1st row
+        res[0] = 1;
+
+        // coz index will go till j-1...
+        for(int i=1; i<= rowIndex; i++){
+            for(int j=i; j>=1; j--){ // traverse from end, not front.
+                res[j] += res[j-1];
+            }
+        }
+        return Arrays.asList(res);
+    }
+
+//**********************************************************************************//
+02/25/18
+Q29)Word Ladder
+
+  /*Given two words (beginWord and endWord), and a dictionary's word list,
+   find the length of shortest transformation sequence from beginWord to endWord, such that:
+
+    Only one letter can be changed at a time.
+    Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+    For example,
+
+    Given:
+    beginWord = "hit"
+    endWord = "cog"
+    wordList = ["hot","dot","dog","lot","log","cog"]
+    As one shortest transformation is "hit" -> "hot" -> "dot" -> "dog" -> "cog",
+            return its length 5.
+
+    Note:
+    Return 0 if there is no such transformation sequence.
+    All words have the same length.
+    All words contain only lowercase alphabetic characters.
+    You may assume no duplicates in the word list.
+    You may assume beginWord and endWord are non-empty and are not the same.  */
+
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+
+        int dist = 1;
+        Queue<String> queue = new LinkedList<String>();
+        queue.add(beginWord);
+        wordList.add(endWord);
+
+        while(!queue.isEmpty()){
+            int levelSize = queue.size();
+            while(levelSize>0){
+                //find adjacent strings from dictionary and
+                //add to queue...run bfs..
+                String cur = queue.remove();
+                List<String> adj = getAdjacentString(cur,wordList);
+                if(!adj.isEmpty()){
+                    //add all adjacent strings.. and also remove from the dict
+                    if(adj.contains(endWord)){
+                        return dist+1;
+                    }
+                    queue.addAll(adj);
+                    wordList.removeAll(adj);
+                }
+                levelSize--;
+            }
+            dist++; // checking next adjacents...one more branch...so distance increases
+        }
+
+        return 0;
+    }
+
+    public List<String> getAdjacentString(String cur, List<String> wordList){
+        int[] dict = new int[26];
+        for(char c: cur.toCharArray())
+            dict[c-'a']++;
+
+        List<String> adjacents = new ArrayList<>();
+
+        for(String word: wordList){
+            int[] dClone = dict.clone();
+            for(char c: word.toCharArray())
+                dClone[c-'a']--;
+
+            // one char added, one char removed...for 1 char change..so sum ==0
+            if(Arrays.stream(dClone).filter(t -> t==-1).count() == 1){
+                adjacents.add(word);
+            }
+        }
+        return adjacents;
+    }

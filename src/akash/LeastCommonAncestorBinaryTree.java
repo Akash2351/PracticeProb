@@ -37,4 +37,22 @@ For example, the lowest common ancestor (LCA) of nodes 5 and 1 is 3.
 
         return left == null ? right : left;
     }
+
+    public TreeNode lowestCommonAncestorBST(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null) return root;
+        if (root == p || root == q) return root;
+
+        TreeNode left = null, right = null;
+        if (p.val < root.val || q.val < root.val)
+            left = lowestCommonAncestor(root.left, p, q);
+
+        if (p.val > root.val || q.val > root.val)
+            right = lowestCommonAncestor(root.right, p, q);
+
+        if (left != null && right != null) return root;
+        if (left == null && right == null) return null;
+
+        return left == null ? right : left;
+    }
+
 }
