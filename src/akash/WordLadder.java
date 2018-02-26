@@ -75,6 +75,7 @@ public class WordLadder {
                 adjacents.add(word);
             }
         }
+
         return adjacents;
     }
 
