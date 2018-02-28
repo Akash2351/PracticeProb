@@ -72,7 +72,7 @@ class Time implements Comparable<Time> {
             if (hours > 23)
                 hours = 0;
         }
-        return String.format("%02d", hours) + ":" + String.format("%02d", min);
+        return String.format("%02d", hours) + String.format("%02d", min);
     }
 
     public void getAllCombination() {
@@ -81,7 +81,7 @@ class Time implements Comparable<Time> {
 
     public boolean isValidTime(String str) {
         String hour = str.substring(0, 2);
-        String min = str.substring(3, 5);
+        String min = str.substring(2, 4);
         try {
             int hrs = Integer.parseInt(hour);
             int mins = Integer.parseInt(min);
@@ -95,9 +95,8 @@ class Time implements Comparable<Time> {
 
     void generateRecursive(String cur, Set<String> combinations, int index, List<Character> curList) {
         if (index == nos.size()) {
-            String str = cur.substring(0, 2) + ":" + cur.substring(2, 4);
-            if (isValidTime(str))
-                combinations.add(str);
+            if (isValidTime(cur))
+                combinations.add(cur);
             return;
         } else {
             for (int i = 0; i < curList.size(); i++) {
@@ -115,6 +114,7 @@ class Time implements Comparable<Time> {
             next = getNextTime();
         } while (!combs.contains(next));
 
-        return next;
+        String str = next.substring(0, 2) + ":" + next.substring(2, 4);
+        return str;
     }
 }
