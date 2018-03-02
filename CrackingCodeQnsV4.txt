@@ -1617,3 +1617,333 @@ the order should be from left to right.
             }
         }
     }
+
+//**********************************************************************************//
+02/28/18
+Q37)Binary Tree Right hand side view
+/* Given a binary tree, imagine yourself standing on the right
+ side of it, return the values of the nodes you can see
+ ordered from top to bottom.
+
+    For example:
+    Given the following binary tree,
+               1            <---
+            /   \
+           2     3         <---
+            \     \
+            5     4       <---
+    You should return [1, 3, 4].  */
+
+
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> list = new ArrayList<>();
+        if(root ==  null) return list;
+        rightView(root, list,0);
+        return list;
+    }
+
+    public void rightView(TreeNode root, List<Integer> list, int depth){
+        if(root!=null){
+
+            //add only 1 node for each level...if right is null, add left...
+            if(list.size() == depth){
+                list.add(root.val);
+            }
+            //keep traversing the right side of the tree...
+            //either ways only 1 node per level will be added...
+            //this priority will be given to right side node first.
+            rightView(root.right,list, depth+1);
+            rightView(root.left, list, depth+1);
+        }
+    }
+
+
+//**********************************************************************************//
+03/1/18
+Q38)Baseball Game
+/*You're now a baseball game point recorder.
+Given a list of strings, each string can be one of the 4 following types:
+
+Integer (one round's score): Directly represents the number
+ of points you get in this round.
+"+" (one round's score): Represents that the points you
+ get in this round are the sum of the last two valid round's points.
+"D" (one round's score): Represents that the points you
+get in this round are the doubled data of the last valid round's points.
+"C" (an operation, which isn't a round's score): Represents
+ the last valid round's points you get were invalid and should be removed.
+Each round's operation is permanent and could have an impact
+ on the round before and the round after.
+
+You need to return the sum of the points you could get in all the rounds.
+Example 1:
+Input: ["5","2","C","D","+"]
+Output: 30
+    Explanation:
+Round 1: You could get 5 points. The sum is: 5.
+Round 2: You could get 2 points. The sum is: 7.
+Operation 1: The round 2's data was invalid. The sum is: 5.
+Round 3: You could get 10 points (the round
+2's data has been removed). The sum is: 15.
+Round 4: You could get 5 + 10 = 15 points. The sum is: 30. */
+
+//Use a stack to push all values, remove values if needed
+    public int calPoints(String[] ops) {
+        if(ops.length == 0)return 0;
+
+        Stack<Integer> stack = new Stack<>();
+        int sum=0;
+
+        for(int i=0; i<ops.length; i++){
+            if(ops[i].equals("C")){
+                int score = stack.pop();
+                sum -= score;
+            }
+            else if(ops[i].equals("D")){
+                int score = 2 * stack.peek();
+                stack.push(score);
+                sum+=score;
+            }
+            else if(ops[i].equals("+")){
+                int score1 = stack.pop();
+                int score2 = stack.peek();
+                int score = score1+score2;
+                stack.push(score1);
+                stack.push(score);
+                sum+=score;
+            } else {
+                stack.push(Integer.valueOf(ops[i]));
+                sum+= stack.peek();
+            }
+        }
+        return sum;
+    }
+
+//**********************************************************************************//
+03/1/18
+Q39)Jump game / Min jumps needed to reach end
+
+//Similar to min jumps needed to reach end of array..
+/* Given an array of non-negative integers, you are initially
+ positioned at the first index of the array.
+
+    Each element in the array represents your maximum jump
+    length at that position.
+   Determine if you are able to reach the last index.
+
+    For example:
+    A = [2,3,1,1,4], return true.
+
+    A = [3,2,1,0,4], return false.*/
+
+    public boolean canJump(int[] nums) {
+        if(nums.length<=1) return true;
+        if(nums[0] == 0) return false;
+
+        int[] minJumps = new int[nums.length];
+        //initialize all to inifinity, except 0...
+        Arrays.fill(minJumps, Integer.MAX_VALUE);
+        minJumps[0] = 0;
+
+        for(int i=1; i<nums.length; i++){
+            for(int j=0; j<i; j++){
+                if( i <= j+nums[j]) {// within range, can jump
+                    if(minJumps[j]!=Integer.MAX_VALUE)
+                        minJumps[i] = Math.min(minJumps[i], minJumps[j]+1);
+                }
+            }
+        }
+
+        //cannot reach till there...
+        if(minJumps[nums.length-1] == Integer.MAX_VALUE )
+            return false;
+
+        return true;
+    }
+
+    public static void main(String[] args) {
+        JumpGame gm = new JumpGame();
+        System.out.println(gm.canJump(new int[]{2,3,1,1,4}));
+        System.out.println(gm.canJump(new int[]{3,2,1,0,4}));
+        System.out.println(gm.canJump(new int[]{1,0,0,1,1,2,2,0,2,2}));
+    }
+
+//**********************************************************************************//
+03/1/18
+Q40)Min cost climbing stairs
+
+/*    On a staircase, the i-th step has some non-negative
+ cost cost[i] assigned (0 indexed).
+
+    Once you pay the cost, you can either climb one or two steps.
+     You need to find minimum cost to reach the top of the floor,
+      and you can either start from the step with index 0,
+      or the step with index 1.
+
+    Example 1:
+    Input: cost = [10, 15, 20]
+    Output: 15
+    Explanation: Cheapest is start on cost[1], pay that cost and go to the top.
+    Example 2:
+    Input: cost = [1, 100, 1, 1, 1, 100, 1, 1, 100, 1]
+    Output: 6
+    Explanation: Cheapest is start on cost[0], and only step on 1s, skipping cost[3].*/
+
+    public int minCostClimbingStairs(int[] cost) {
+
+        int[] minCost = new int[cost.length+1];
+        minCost[0] = cost[0];
+        minCost[1] = cost[1];
+
+        for(int i=2; i<=cost.length; i++){
+            int costValue =  i == cost.length? 0 : cost[i];
+            minCost[i] = Math.min(minCost[i-1]+costValue, minCost[i-2]+costValue);
+        }
+
+        return minCost[cost.length];
+    }
+
+//**********************************************************************************//
+03/1/18
+Q41)Coin Change
+
+/* You are given coins of different denominations and a
+total amount of money amount. Write a function to compute
+ the fewest number of coins that you need to make up that amount.
+  If that amount of money cannot be made up by any combination
+   of the coins, return -1.
+    Example 1:
+    coins = [1, 2, 5], amount = 11
+            return 3 (11 = 5 + 5 + 1)
+
+    Example 2:
+    coins = [2], amount = 3
+            return -1.
+    Note:
+    You may assume that you have an infinite number of each kind of coin.*/
+
+    public int coinChange(int[] coins, int amount) {
+        if(coins==null || coins.length == 0 || amount <=0) return 0;
+
+        int[] dp = new int[amount+1];
+        Arrays.fill(dp,Integer.MAX_VALUE);
+        dp[0] = 0;
+
+        for(int i=0; i<coins.length; i++){
+            //for with repetition, start from amount =0 and increase
+            for(int j=1; j<=amount; j++){
+                if(coins[i] <= j && dp[j-coins[i]] != Integer.MAX_VALUE){
+                    dp[j] = Math.min(dp[j], 1+dp[j-coins[i]]);
+                }
+            }
+        }
+        if(dp[amount] == Integer.MAX_VALUE) return -1;
+        return dp[amount];
+    }
+
+   //without repetition of coins...
+   //eg: coins: {1,2,3,4}, amt: 9  op: 3
+   //eg: coins: {1,2,3,4}, amt: 11  op: -1
+    public int coinChange(int[] coins, int amount) {
+        if(coins==null || coins.length == 0 || amount <=0) return 0;
+
+        int[] dp = new int[amount+1];
+        Arrays.fill(dp,Integer.MAX_VALUE);
+        dp[0] = 0;
+
+        for(int i=0; i<coins.length; i++){
+            //for without repetition, start from amount=max and decrease..
+            //for with repetition, start from amount =0 and increase
+            for(int j=amount; j>=1; j--){
+                if(coins[i] <= j && dp[j-coins[i]] != Integer.MAX_VALUE){
+                    dp[j] = Math.min(dp[j], 1+dp[j-coins[i]]);
+                }
+            }
+        }
+        if(dp[amount] == Integer.MAX_VALUE) return -1;
+        return dp[amount];
+    }
+
+
+//**********************************************************************************//
+03/1/18
+Q42)Knapsack problem
+   /* Given a bag which can only take certain weight W.
+    Given list of items with their weights and price.
+     How do you fill this bag to maximize value of items in the bag.*/
+
+   //0-1 knapsack problem
+    /* consider the example, W = 7, wt[] = {1,3,4,5}, val[]={1,4,5,7}
+    using DP to solve this... needs 2d matrix
+
+    cols - weight 1 to w
+    rows - each item weight
+
+            --- weight 0 to W ----
+          0  1  2  3  4  5  6  7
+  wt[] 1  0  1  1  1  1  1  1  1  // item[0] can be used only 1 time..val is 1
+       3  0  1  1  4  5  5  5  5  // if wt[i]> W, use previous row value..
+       4  0  1  1  4  5  6  6  9  //dp[i][j] = max(dp[i-1][j],dp[i-1][j-wt[i]]+val[i])
+       5  0  1  1  4  5  7  8  9
+     o/p: 9
+     */
+   public int knapsackWithoutRepetition(int weight, int n, int[] wt, int[] val){
+        if(weight == 0 || n == 0) return 0;
+
+        int[][] dp = new int[n][1+weight];
+        //initialize values
+       for(int j=0; j<n; j++)
+           dp[j][0] = 0;
+
+       //initialize first row...
+       for(int i=1; i<n; i++)
+           if(wt[0]<=i)dp[0][i] = val[0];
+
+
+       for(int i=1; i<n; i++){
+           for(int j=1; j<=weight; j++){
+               if(wt[i]> j){
+                   // cannot add this item, its heavy..
+                   //use previous row values.
+                   dp[i][j] = i>0? dp[i-1][j] : 0;
+               } else {
+                   //consider this item... with or without..
+                   dp[i][j] = Math.max(dp[i-1][j],  //without item
+                           dp[i-1][j-wt[i]]+val[i]);  //with item
+               }
+           }
+       }
+
+       return dp[n-1][weight];
+   }
+
+   /* Consider the case when repetition of items are allowed
+   *  we need 1d array to solve this..
+   *  W = 7, wt[] = {1,3,4,5}, val[]={1,4,5,7}
+   *
+   *     0  1  2  3  4  5  6  7
+   *     0  1  2  3  4  5  6  7  - when coin[0] is only consider
+   *
+   *     0  1  2  4  5  6  8  9 - when coins[0,1] are considered
+   *     0  1  2  4  5  6  8  9 - when coins[0,1,2] are considered
+   *     0  1  2  4  5  7  8  9 - when coins[0,1,2,3] are considered
+   * o/p: 9
+   * */
+
+    public int knapsackWithRepetition(int weight, int n, int[] wt, int[] val){
+        if(weight == 0 || n == 0) return 0;
+
+        int[] dp = new int[1+weight];
+        Arrays.fill(dp,Integer.MIN_VALUE);
+        dp[0] = 0;
+
+        for(int i=0; i<n; i++){
+            for(int j=1; j<=weight; j++){
+                if(wt[i] <= j){  //consider the item
+                    dp[j] = Math.max(dp[j], //dont consider the item
+                            dp[j-wt[i]]+val[i]);  //consider the item
+                }
+            }
+        }
+        return dp[weight];
+    }

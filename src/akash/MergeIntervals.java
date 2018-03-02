@@ -46,7 +46,7 @@ public class MergeIntervals {
         int start = intervals.get(0).start;
         int end = intervals.get(0).end;
 
-        for (Iterator<Interval> iterator = list.iterator(); iterator.hasNext(); ) {
+        for (Iterator<Interval> iterator = intervals.iterator(); iterator.hasNext(); ) {
             Interval next = iterator.next();
             if (end >= next.start) {
                 end = Math.max(end, next.end);
