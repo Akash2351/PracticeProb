@@ -20,8 +20,9 @@ public class Test {
 
         // System.out.println(numberNeeded("hello", "ell"));
 
-       /* HashMap<Character, Integer> map = new HashMap<>();
-        map.put('A',3);
+        HashMap<Character, Integer> map = new HashMap<>();
+
+        /*map.put('A',3);
         map.put('B',2);
         map.put('Z',5);
         TreeMap<Character,Integer> treeMap = new TreeMap<>((e1,e2) -> {return map.get(e1).compareTo(map.get(e2));});
