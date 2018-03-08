@@ -1,0 +1,373 @@
+//**********************************************************************************//
+03/4/18
+Q1)  Binary Tree Zigzag Level Order Traversal
+
+/* Given a binary tree, return the zigzag level order
+traversal of its nodes' values. (ie, from left to right,
+ then right to left for the next level and alternate between).
+
+    For example:
+    Given binary tree [3,9,20,null,null,15,7],
+            3
+            / \
+            9  20
+            /  \
+            15   7
+   return its zigzag level order traversal as:
+            [
+            [3],
+            [20,9],
+            [15,7]
+            ]  */
+
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> list = new ArrayList<>();
+        if(root==null) return list;
+
+        Queue<TreeNode> q = new LinkedList<TreeNode>();
+        q.add(root);
+
+        List<Integer> subList;
+        boolean order = true; //true for normal
+
+        while(!q.isEmpty()){
+            int levelSize = q.size();
+            subList = new ArrayList<>();
+            while(levelSize >0){
+                TreeNode node = q.poll();
+                if(order){
+                    subList.add(node.val);
+                }else {
+                    subList.add(0, node.val);
+                }
+                if(node.left!=null)q.add(node.left);
+                if(node.right!=null)q.add(node.right);
+                levelSize--;
+            }
+            list.add(subList);
+            order = !order; //flip direction for each level
+        }
+        return list;
+    }
+
+//**********************************************************************************//
+03/4/18
+Q2)Construct Binary Tree from Inorder and PreOrder Traversal
+
+/*
+   Given preorder and inorder traversal of a tree,
+    construct the binary tree.
+
+            Note:
+    You may assume that duplicates do not exist in the tree.
+
+   For example, given
+    preorder = [3,9,20,15,7]
+    inorder = [9,3,15,20,7]
+    Return the following binary tree:
+
+             3
+            / \
+           9  20
+             /  \
+            15   7    */
+
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+
+        //using a hashmap to get locations for inorder...
+        HashMap<Integer,Integer> imap = new HashMap<>(inorder.length);
+        for(int i=0; i<inorder.length; i++)
+            imap.put(inorder[i],i);
+
+        return buildTree(0,preorder.length-1,preorder,
+                        0,inorder.length-1,inorder,imap);
+
+    }
+
+    public TreeNode buildTree(int preStart, int preEnd, int[] preorder,
+                              int inStart, int inEnd, int[] inorder, HashMap<Integer,Integer> imap){
+
+
+        if(preStart > preEnd || inEnd >inEnd) return null;  //out of range
+
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int inRoot = imap.get(preorder[preStart]);
+        int leftLength = inRoot - inStart;
+
+        root.left = buildTree(preStart+1,preStart+leftLength,preorder,
+                            inStart,inRoot-1,inorder,imap);
+        root.right = buildTree(preStart+leftLength+1,preEnd,preorder,
+                inRoot+1,inEnd,inorder,imap);
+        return root;
+    }
+
+//**********************************************************************************//
+03/4/18
+Q3)Construct Binary Tree from Inorder and Postorder Traversal
+
+//Same logic like previous...
+/*
+ Given inorder and postorder traversal of a tree,
+  construct the binary tree.
+            Note:
+  You may assume that duplicates do not exist in the tree.
+            For example, given
+
+    inorder = [9,3,15,20,7]
+    postorder = [9,15,7,20,3]
+    Return the following binary tree:
+
+            3
+            / \
+            9  20
+              /  \
+              15   7*/
+
+    public TreeNode buildTree(int[] inorder, int[] postorder) {
+        HashMap<Integer,Integer> imap = new HashMap<>();
+
+        for(int i=0; i<inorder.length; i++){
+            imap.put(inorder[i],i);
+        }
+
+        return buildTree(0, inorder.length-1,inorder,postorder.length-1,0,postorder,imap);
+    }
+
+    public TreeNode buildTree(int inStart, int inEnd, int[] inorder,
+                              int postStart, int postEnd, int[] postorder,
+                              HashMap<Integer,Integer> imap){
+
+        if(inStart >inEnd ||postEnd > postStart) return null;
+
+        TreeNode root = new TreeNode(postorder[postStart]);
+        int inRoot = imap.get(postorder[postStart]);
+        int rightTreeSize = inEnd - inRoot;
+
+        root.left = buildTree(inStart, inRoot-1, inorder,postStart - rightTreeSize -1,0,postorder,imap);
+        root.right = buildTree(inRoot+1, inEnd, inorder,postStart -1,postStart-rightTreeSize,postorder,imap);
+        return root;
+    }
+
+//**********************************************************************************//
+03/4/18
+Q4) reverse words in a string 2
+
+/* Given an input string, reverse the string word by word.
+ A word is defined as a sequence of non-space characters.
+
+    The input string does not contain leading or trailing
+    spaces and the words are always separated by a single space.
+
+    For example,
+    Given s = "the sky is blue",
+     return "blue is sky the".
+
+    Could you do it in-place without allocating extra space?*/
+
+    public void reverseWords(char[] str) {
+        //reverse entire string first...
+        reverse(str, 0, str.length -1);
+
+        //reverse each word..
+        int start =0;
+        for(int i=0; i< str.length; i++){
+            if(str[i] == ' '){
+                reverse(str, start, i-1);
+                start = i+1;
+            }
+        }
+        //last word will not be reversed...reverse it
+        reverse(str, start, str.length-1);
+
+    }
+
+    public void reverse(char[] str, int start, int end){
+        while(start< end){
+            char temp = str[start];
+            str[start] = str[end];
+            str[end] = temp;
+            start++; end--;
+        }
+    }
+
+//**********************************************************************************//
+03/7/18
+Q5)Maximum SubArray Size sum equals K
+/*
+Given an array nums and a target value k, find the maximum length of a
+ subarray that sums to k. If there isn't one, return 0 instead.
+Note:
+The sum of the entire nums array is guaranteed to fit within the 32-bit signed integer range.
+
+Example 1:
+Given nums = [1, -1, 5, -2, 3], k = 3,
+return 4. (because the subarray [1, -1, 5, -2] sums to 3 and is the longest)
+
+Example 2:
+Given nums = [-2, -1, 2, 1], k = 1,
+return 2. (because the subarray [-1, 2] sums to 1 and is the longest)
+
+    Follow Up:
+    Can you do it in O(n) time?
+    */
+    public int maxSubArrayLen(int[] nums, int k) {
+        if(nums == null || nums.length == 0) return 0;
+
+        int sum=0, maxSubSum=0;
+        //use map to store index of sum till that element.
+        HashMap<Integer,Integer> map = new HashMap<>();
+
+        for(int i=0; i<nums.length; i++){
+            //check if the sum = k, or
+            //sum(current i) - sum(at some j) =k ...then max of (i-j) is answer
+            sum += nums[i];
+
+            if(sum == k){
+                return i+1;
+            } else if(map.containsKey(sum - k)){
+                maxSubSum = Math.max(maxSubSum, i - map.get(sum-k));
+            } else {
+                if(!map.containsKey(sum))
+                    map.put(sum, i);
+            }
+        }
+        return maxSubSum;
+    }
+
+//**********************************************************************************//
+03/7/18
+Q6)Tic Tac Toe
+  //O(N) approach...check that particular row/col
+ // and diagonal to see if they are the same...O(n)
+
+ /*O(1) approach:
+ * The key observation is that in order to win Tic-Tac-Toe you must
+ * have the entire row or column. Thus, we don’t need to keep track
+ * of an entire n^2 board. We only need to keep a count for each row and column.
+  * If at any time a row or column matches the size of the board
+  * then that player has won.*/
+   private int[] rows;
+    private int[] cols;
+    private int diagonal;
+    private int antiDiagonal;
+
+    public int move2(int row, int col, int player) {
+        int toAdd = player == 1 ? 1 : -1;
+
+        rows[row] += toAdd;
+        cols[col] += toAdd;
+        if (row == col)
+        {
+            diagonal += toAdd;
+        }
+
+        if (col == (cols.length - row - 1))
+        {
+            antiDiagonal += toAdd;
+        }
+
+        int size = rows.length;
+        if (Math.abs(rows[row]) == size ||
+                Math.abs(cols[col]) == size ||
+                Math.abs(diagonal) == size  ||
+                Math.abs(antiDiagonal) == size)
+        {
+            return player;
+        }
+
+        return 0;
+    }
+
+//**********************************************************************************//
+03/7/18
+Q7)Trie data structure
+
+public class Trie {
+
+    private class TrieNode {
+        Map<Character, TrieNode> children;
+        boolean endOfWord;
+        public TrieNode() {
+            children = new HashMap<>();
+            endOfWord = false;
+        }
+    }
+
+    private final TrieNode root;
+    public Trie() {
+        root = new TrieNode();
+    }
+
+    /**
+     * Iterative implementation of insert into trie
+     */
+    public void insert(String word) {
+        TrieNode current = root;
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            if (node == null) {
+                node = new TrieNode();
+                current.children.put(ch, node);
+            }
+            current = node;
+        }
+        //mark the current nodes endOfWord as true
+        current.endOfWord = true;
+    }
+
+    /**
+     * Iterative implementation of search into trie.
+     */
+    public boolean search(String word) {
+        TrieNode current = root;
+        for (int i = 0; i < word.length(); i++) {
+            char ch = word.charAt(i);
+            TrieNode node = current.children.get(ch);
+            //if node does not exist for given char then return false
+            if (node == null) {
+                return false;
+            }
+            current = node;
+        }
+        //return true of current's endOfWord is true else return false.
+        return current.endOfWord;
+    }
+
+   /**
+     * Delete word from trie.
+     */
+    public void delete(String word) {
+        delete(root, word, 0);
+    }
+
+    /**
+     * Returns true if parent should delete the mapping
+     */
+    private boolean delete(TrieNode current, String word, int index) {
+        if (index == word.length()) {
+            //when end of word is reached only delete if currrent.endOfWord is true.
+            if (!current.endOfWord) {
+                return false;
+            }
+            current.endOfWord = false;
+            //if current has no other mapping then return true
+            return current.children.size() == 0;
+        }
+        char ch = word.charAt(index);
+        TrieNode node = current.children.get(ch);
+        if (node == null) {
+            return false;
+        }
+        boolean shouldDeleteCurrentNode = delete(node, word, index + 1);
+
+        //if true is returned then delete the mapping of character and trienode reference from map.
+        if (shouldDeleteCurrentNode) {
+            current.children.remove(ch);
+            //return true if no mappings are left in the map.
+            return current.children.size() == 0;
+        }
+        return false;
+    }
+}
+
