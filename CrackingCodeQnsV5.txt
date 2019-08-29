@@ -531,4 +531,73 @@ s = "2[abc]3[cd]ef", return "abcabccdcdcdef".*/
         return stk.pop();
     }
 
+//**********************************************************************************//
+04/1/18
+Q11)Reverse bits
+/*Reverse bits of a given 32 bits unsigned integer.
 
+For example, given input 43261596 (represented in binary as 00000010100101000001111010011100),
+return 964176192 (represented in binary as 00111001011110000010100101000000).
+*/
+    public int reverseBits(int n) {
+        int[] bits = new int[32];
+        Arrays.fill(bits, 0);
+
+        int idx = 31;
+        while(n !=0){
+            int bit = (n&1);
+            bits[idx--] = bit;
+            n = n >>> 1;
+        }
+        int no = 0;
+        for(int i = 0; i<32; i++){
+            no += bits[i] * (int) Math.pow(2,i);
+        }
+        return no;
+    }
+
+    public int reverseBits2(int n) {
+        int res=0;
+        for(int i = 0; i<32; i++){
+            res += (n&1);
+            n = n >>> 1;
+            if(i<31) // dont do for last bit...
+             res = res << 1;
+        }
+        return res;
+    }
+
+//**********************************************************************************//
+04/1/18
+Q12)Implement Strstr()
+/*
+  Return the index of the first occurrence of needle in haystack,
+   or -1 if needle is not part of haystack.
+
+  Example 1:
+  Input: haystack = "hello", needle = "ll"
+  Output: 2
+  Example 2:
+  Input: haystack = "aaaaa", needle = "bba"
+  Output: -1 */
+
+    public int strStr(String haystack, String needle) {
+        if(haystack == null || needle==null) return -1;
+        if(haystack.equals(needle)) return 0;
+
+        int nedLen = needle.length();
+        int len = haystack.length();
+
+        if(nedLen > len) return -1;
+        if(len >0 && nedLen == 0) return 0; // "" is always present in str
+
+        for(int i=0; i<haystack.length(); i++){
+            char c = haystack.charAt(i);
+            if( c != needle.charAt(0)) continue;
+            else {
+                if(i+nedLen > len) return -1;
+                if(haystack.substring(i, i+nedLen).equals(needle))return i;
+            }
+        }
+        return -1;
+    }
